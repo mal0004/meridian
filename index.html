@@ -177,7 +177,7 @@
       padding: 8px 16px;
       background: var(--accent);
       color: #fff;
-      border-radius: var(--radius);
+      border-radius: var(--r-md);
       font-weight: var(--weight-semi);
       font-size: var(--text-sm);
       text-decoration: none;
@@ -2127,7 +2127,7 @@
     .fp-close {
       width: 28px;
       height: 28px;
-      border-radius: var(--radius-sm);
+      border-radius: var(--r-sm);
       border: none;
       background: transparent;
       color: var(--text-faint);
@@ -2140,7 +2140,7 @@
       transition: background .12s, color .12s;
     }
 
-    .fp-close:hover { background: var(--surface-2); color: var(--text); }
+    .fp-close:hover { background: var(--bg-subtle); color: var(--text); }
 
     .fp-title {
       font-size: var(--text-md);
@@ -2206,7 +2206,7 @@
     .fp-desc-toggle {
       display: flex;
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: var(--r-sm);
       overflow: hidden;
     }
 
@@ -2265,7 +2265,7 @@
     .fp-desc-preview code {
       font-family: var(--font-mono);
       font-size: .85em;
-      background: var(--surface-2);
+      background: var(--bg-subtle);
       border: 1px solid var(--border);
       border-radius: 3px;
       padding: 1px 5px;
@@ -2277,8 +2277,8 @@
       padding: var(--sp-1) var(--sp-3);
       color: var(--text-faint);
       font-style: italic;
-      background: var(--surface-2);
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      background: var(--bg-subtle);
+      border-radius: 0 var(--r-sm) var(--r-sm) 0;
     }
 
     .fp-desc-preview hr {
@@ -2309,9 +2309,9 @@
       font-size: var(--text-sm);
       line-height: 1.6;
       color: var(--text);
-      background: var(--surface-2);
+      background: var(--bg-subtle);
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: var(--r-sm);
       resize: vertical;
       outline: none;
       transition: border-color .15s, box-shadow .15s;
@@ -2362,7 +2362,7 @@
       padding: 11px 14px;
       background: var(--bg-elevated);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: var(--r-md);
       box-shadow: var(--shadow-lg);
       pointer-events: all;
       position: relative;
@@ -2416,7 +2416,7 @@
     .toast-undo {
       flex-shrink: 0;
       padding: 3px 10px;
-      border-radius: var(--radius-sm);
+      border-radius: var(--r-sm);
       border: 1px solid var(--border-strong);
       background: transparent;
       color: var(--text);
@@ -2428,7 +2428,7 @@
     }
 
     .toast-undo:hover {
-      background: var(--surface-2);
+      background: var(--bg-subtle);
       border-color: var(--accent);
       color: var(--accent);
     }
@@ -2443,14 +2443,14 @@
       cursor: pointer;
       font-size: 16px;
       line-height: 1;
-      border-radius: var(--radius-sm);
+      border-radius: var(--r-sm);
       display: flex;
       align-items: center;
       justify-content: center;
       transition: background .12s, color .12s;
     }
 
-    .toast-close:hover { background: var(--surface-2); color: var(--text); }
+    .toast-close:hover { background: var(--bg-subtle); color: var(--text); }
 
     /* Progress bar — sits at the bottom of the toast */
     .toast-progress {
@@ -2484,7 +2484,7 @@
     /* Delete button in focus panel header */
     .fp-delete-btn {
       padding: 4px 10px;
-      border-radius: var(--radius-sm);
+      border-radius: var(--r-sm);
       border: 1px solid var(--border);
       background: transparent;
       color: var(--text-faint);
@@ -3329,7 +3329,6 @@
     card.dataset.id = task.id;
     card.draggable  = true;
     card.tabIndex   = 0;
-    card.setAttribute('role', 'article');
     card.setAttribute('aria-label', ariaLabel);
     card.innerHTML = `
       <div class="card-header">
@@ -3641,17 +3640,16 @@
       .map(b => b.dataset.tag);
 
     const task = {
-      id:       makeId(),
+      id:          makeId(),
       title,
-      column:   modalEl.querySelector('#mColumn').value,
-      priority: modalEl.querySelector('#mPriority').value,
-      assignee: modalEl.querySelector('#mAssignee').value || null,
-      tags:     selectedTags,
-      createdAt: Date.now(),
+      column:      modalEl.querySelector('#mColumn').value,
+      priority:    modalEl.querySelector('#mPriority').value,
+      assignee:    modalEl.querySelector('#mAssignee').value || null,
+      tags:        selectedTags,
+      createdAt:   Date.now(),
+      description: '',
+      comments:    [],
     };
-
-    task.comments    = [];
-    task.description = '';
 
     tasks.unshift(task);
     saveTasks();
@@ -4273,11 +4271,12 @@
       const m = fuzzyMatch(query, t.title);
       if (!m.match) return null;
       const col = COLUMNS.find(c => c.id === t.column);
+      const taskId = t.id; // capture for closure
       return {
         label: t.title, hlLabel: hlText(t.title, m.indices),
         group: 'Tâches', score: m.score, shortcut: '', isTask: true,
         colLabel: col ? col.label : '', colDot: col ? col.dot : '#ccc',
-        action() { closePalette(); switchView('kanban'); }
+        action() { closePalette(); switchView('kanban'); openFocus(taskId); }
       };
     }).filter(Boolean) : [];
 
@@ -4761,7 +4760,10 @@
     _fp.classList.remove('open');
     _fp.setAttribute('aria-hidden', 'true');
     _focusTaskId = null;
-    _fpPreFocus?.focus();
+    // Guard against stale reference: renderBoard() recreates card DOM nodes
+    if (_fpPreFocus && document.body.contains(_fpPreFocus)) {
+      _fpPreFocus.focus();
+    }
     _fpPreFocus = null;
   }
 
