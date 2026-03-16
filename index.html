@@ -3244,13 +3244,25 @@
     return SEED.map(t => ({ ...t, description: t.description || '', comments: (t.comments || []).map(c => ({ ...c })) }));
   }
 
-  function saveTasks() {
+  // Debounced persistence — in-memory tasks[] is always the source of truth.
+  // The actual write is deferred 300 ms so rapid successive saves (drag, filter
+  // toggle, etc.) collapse into a single stringify+setItem call.
+  let _saveFlushTimer = null;
+  function _flushSave() {
+    clearTimeout(_saveFlushTimer);
+    _saveFlushTimer = null;
     localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+  }
+  function saveTasks() {
+    clearTimeout(_saveFlushTimer);
+    _saveFlushTimer = setTimeout(_flushSave, 300);
     // Keep dashboard in sync without requiring a view switch
     if (_appInitDone && document.getElementById('view-dashboard').classList.contains('active')) {
       renderDashboard();
     }
   }
+  // Guarantee a final flush if the tab is closed mid-debounce
+  window.addEventListener('beforeunload', _flushSave);
 
   let tasks = loadTasks();
 
@@ -3370,6 +3382,43 @@
     });
 
     return card;
+  }
+
+  // Surgical update: refresh only the comment-count badge and aria-label on a
+  // single card. Avoids a full renderBoard() call just for a numeric badge.
+  function updateCardBadge(taskId) {
+    const task = tasks.find(t => t.id === taskId);
+    const card = document.querySelector(`[data-id="${taskId}"]`);
+    if (!task || !card) return;
+    const count  = task.comments.length;
+    const footer = card.querySelector('.card-footer-right');
+    if (footer) {
+      const SVG = `<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M12 8.5a1 1 0 01-1 1H4l-2.5 2V3a1 1 0 011-1h9a1 1 0 011 1z"/></svg>`;
+      let badge = footer.querySelector('.card-comment-count');
+      if (count === 0) {
+        badge?.remove();
+      } else if (badge) {
+        badge.innerHTML = `${SVG} ${count}`;
+        badge.title = `${count} commentaire${count > 1 ? 's' : ''}`;
+      } else {
+        badge = document.createElement('span');
+        badge.className = 'card-comment-count';
+        badge.title = `${count} commentaire${count > 1 ? 's' : ''}`;
+        badge.innerHTML = `${SVG} ${count}`;
+        footer.prepend(badge);
+      }
+    }
+    // Keep aria-label in sync
+    const a   = getAssignee(task.assignee);
+    const pri = getPriority(task.priority);
+    const col = getColumn(task.column);
+    card.setAttribute('aria-label', [
+      escHtml(task.title),
+      pri   ? `Priorité : ${pri.label}` : '',
+      col   ? `Colonne : ${col.label}`  : '',
+      a     ? `Assigné à ${a.name}`     : '',
+      count ? `${count} commentaire${count > 1 ? 's' : ''}` : '',
+    ].filter(Boolean).join('. '));
   }
 
   function renderColumn(col) {
@@ -3710,10 +3759,12 @@
   }
 
   function ensureTimelineData(task, idx) {
-    if (task.startDay == null) task.startDay = _DEF_STARTS[idx % _DEF_STARTS.length];
-    if (!task.duration)       task.duration  = _DEF_DURATIONS[idx % _DEF_DURATIONS.length];
+    let dirty = false;
+    if (task.startDay == null) { task.startDay = _DEF_STARTS[idx % _DEF_STARTS.length];   dirty = true; }
+    if (!task.duration)        { task.duration  = _DEF_DURATIONS[idx % _DEF_DURATIONS.length]; dirty = true; }
     task.startDay = Math.max(0, Math.min(task.startDay, TOTAL_DAYS - 1));
     task.duration = Math.max(1, Math.min(task.duration, TOTAL_DAYS - task.startDay));
+    return dirty;
   }
 
   function svgEl(tag, attrs, inner) {
@@ -3722,8 +3773,9 @@
   }
 
   function renderTimeline() {
-    tasks.forEach((t, i) => ensureTimelineData(t, i));
-    saveTasks();
+    // Only persist if any task was missing timeline data (first-ever visit to this view)
+    const dirty = tasks.reduce((acc, t, i) => ensureTimelineData(t, i) || acc, false);
+    if (dirty) saveTasks();
 
     const weekStart   = getMonday(new Date());
     const todayOffset = getTodayOffset();
@@ -3982,17 +4034,33 @@
   }
 
   /* ── Canvas burndown ────────────────────────────────────────── */
+  // Deduplicated scheduler: cancel any already-pending rAF before queuing a new
+  // one. Prevents the ResizeObserver from stacking dozens of draw calls.
+  let _burndownRafId = 0;
+  function scheduleBurndown() {
+    cancelAnimationFrame(_burndownRafId);
+    _burndownRafId = requestAnimationFrame(drawBurndown);
+  }
+
   function drawBurndown() {
     const canvas = document.getElementById('burndownCanvas');
     if (!canvas) return;
     const ctx  = canvas.getContext('2d');
     const dpr  = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();       // no forced reflow
+    const rect = canvas.getBoundingClientRect();
     const W    = rect.width  || 400;
     const H    = rect.height || 220;
-    canvas.width  = Math.round(W * dpr);
-    canvas.height = Math.round(H * dpr);
-    ctx.scale(dpr, dpr);
+    const cw   = Math.round(W * dpr);
+    const ch   = Math.round(H * dpr);
+    // Only resize the backing store when dimensions actually change.
+    // Assigning canvas.width always clears the context — skip when unchanged.
+    if (canvas.width !== cw || canvas.height !== ch) {
+      canvas.width  = cw;
+      canvas.height = ch;
+    }
+    // Absolute transform (not cumulative like ctx.scale) so re-draws without a
+    // dimension change don't compound the DPR scaling.
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     const PAD  = { top: 18, right: 20, bottom: 38, left: 36 };
     const cW   = W - PAD.left - PAD.right;
@@ -4156,7 +4224,7 @@
       HEAT_COLORS.map(c => `<div class="heatmap-legend-cell" style="background:${c}"></div>`).join('');
 
     // ── Burndown (after layout settles) ───────────────────────
-    requestAnimationFrame(drawBurndown);
+    scheduleBurndown();
   }
 
   // Re-draw burndown when the dashboard panel is resized
@@ -4165,13 +4233,13 @@
     if (!_dbView.classList.contains('active')) return;
     // Use reported size to avoid a second forced reflow
     const W = entries[0]?.contentRect.width;
-    if (W > 0) requestAnimationFrame(drawBurndown);
+    if (W > 0) scheduleBurndown();
   });
   _dbResizeObs.observe(_dbView);
 
   // Re-draw burndown when the theme changes (canvas colours are non-CSS)
   new MutationObserver(() => {
-    if (_dbView.classList.contains('active')) requestAnimationFrame(drawBurndown);
+    if (_dbView.classList.contains('active')) scheduleBurndown();
   }).observe(html, { attributes: true, attributeFilter: ['data-theme'] });
 
   /* ================================================================
@@ -4688,7 +4756,7 @@
     task.comments.push({ id, author: authorId, text: text.trim(), ts: Date.now() });
     saveTasks();
     renderFocusComments(task);
-    renderBoard(); // update card comment badges
+    updateCardBadge(_focusTaskId);
   }
 
   /* Author avatar preview */
@@ -4951,8 +5019,7 @@
     saveTasks();
     renderComments(task);
     renderDetailMeta(task);
-    // re-render the card to update comment count badge
-    renderBoard();
+    updateCardBadge(taskId);
   }
 
   /* Update avatar preview when author selector changes */
