@@ -156,6 +156,37 @@
       padding: 0;
     }
 
+    /* ── Accessibility utilities ─────────────────────────────────── */
+
+    /* Screen-reader-only: visually hidden but announced by AT */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Skip-to-content link — visible only on focus */
+    .skip-link {
+      position: fixed;
+      top: 8px; left: 8px;
+      z-index: 99999;
+      padding: 8px 16px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius);
+      font-weight: var(--weight-semi);
+      font-size: var(--text-sm);
+      text-decoration: none;
+      transform: translateY(-100px);
+      transition: transform .15s;
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
     html, body {
       height: 100%;
       font-family: var(--font);
@@ -797,6 +828,12 @@
       border-color: var(--border-strong);
     }
 
+    .kanban-card:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      box-shadow: var(--shadow-md), 0 0 0 4px rgba(91,110,245,.15);
+    }
+
     .kanban-card.dragging {
       opacity: .4;
       transform: scale(.97);
@@ -865,6 +902,20 @@
       font-size: var(--text-xs);
       color: var(--text-faint);
       font-family: var(--font-mono);
+    }
+
+    .card-footer-right {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-1);
+    }
+
+    .card-comment-count {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: var(--text-xs);
+      color: var(--text-faint);
     }
 
     .assignee-avatar {
@@ -1002,6 +1053,275 @@
       padding-top: var(--sp-2);
       border-top: 1px solid var(--border);
     }
+
+    /* ============================================================
+       TASK DETAIL MODAL
+       ============================================================ */
+    .detail-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.52);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 250;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-4);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--dur-base) var(--ease);
+    }
+    .detail-backdrop.open { opacity: 1; pointer-events: all; }
+
+    .detail-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 760px;
+      max-height: 84vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(14px) scale(.97);
+      transition: transform var(--dur-slow) var(--ease);
+    }
+    .detail-backdrop.open .detail-box { transform: none; }
+
+    /* Header */
+    .detail-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sp-3);
+      padding: var(--sp-5) var(--sp-6);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .detail-pri-icon { flex-shrink: 0; margin-top: 2px; }
+    .detail-title {
+      flex: 1;
+      font-size: var(--text-lg);
+      font-weight: var(--weight-semi);
+      color: var(--text);
+      letter-spacing: -.02em;
+      line-height: var(--leading-tight);
+    }
+    .detail-close {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: none; cursor: pointer;
+      color: var(--text-faint); font-size: 18px; border-radius: var(--r-md);
+      flex-shrink: 0;
+      transition: background var(--dur-fast), color var(--dur-fast);
+    }
+    .detail-close:hover { background: var(--bg-subtle); color: var(--text); }
+
+    /* Body: two columns */
+    .detail-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* Left: meta */
+    .detail-meta {
+      width: 200px;
+      flex-shrink: 0;
+      padding: var(--sp-5);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-4);
+    }
+    .meta-group { display: flex; flex-direction: column; gap: 6px; }
+    .meta-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      color: var(--text-faint);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .meta-value {
+      display: flex; align-items: center; gap: var(--sp-2);
+      font-size: var(--text-sm); color: var(--text-muted);
+    }
+    .meta-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .meta-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .meta-id {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+    }
+
+    /* Right: comments */
+    .detail-comments {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .comment-list-header {
+      padding: var(--sp-3) var(--sp-5) var(--sp-2);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+    .comment-list-title {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      color: var(--text-faint);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .comment-count-badge {
+      font-size: var(--text-xs); font-weight: var(--weight-medium);
+      color: var(--text-faint); background: var(--border);
+      border-radius: var(--r-full); padding: 1px 7px;
+    }
+
+    .comment-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--sp-4) var(--sp-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-5);
+    }
+
+    .comment-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: var(--sp-2);
+      color: var(--text-faint);
+      font-size: var(--text-sm);
+      padding: var(--sp-8);
+    }
+    .comment-empty-icon { font-size: 28px; opacity: .4; }
+
+    @keyframes commentIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .comment-item {
+      display: flex;
+      gap: var(--sp-3);
+      align-items: flex-start;
+      animation: commentIn var(--dur-base) var(--ease) both;
+    }
+
+    .comment-avatar-sm {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: var(--weight-bold);
+      color: #fff; flex-shrink: 0; margin-top: 1px;
+    }
+
+    .comment-bubble { flex: 1; min-width: 0; }
+
+    .comment-meta-row {
+      display: flex;
+      align-items: baseline;
+      gap: var(--sp-2);
+      margin-bottom: 5px;
+    }
+    .comment-author {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semi);
+      color: var(--text);
+    }
+    .comment-time {
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+    }
+    .comment-text {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      line-height: var(--leading-loose);
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 0 var(--r-lg) var(--r-lg) var(--r-lg);
+      padding: var(--sp-3) var(--sp-4);
+    }
+
+    /* Input area */
+    .comment-input-area {
+      padding: var(--sp-4) var(--sp-5);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+      background: var(--bg-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+    .comment-input-row {
+      display: flex;
+      gap: var(--sp-3);
+      align-items: flex-start;
+    }
+    .comment-textarea {
+      flex: 1;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: var(--sp-2) var(--sp-3);
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      color: var(--text);
+      resize: none;
+      min-height: 60px;
+      max-height: 140px;
+      outline: none;
+      line-height: var(--leading-normal);
+      transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+    }
+    .comment-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(91,110,245,.12);
+    }
+    .comment-textarea::placeholder { color: var(--text-faint); }
+
+    .comment-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      justify-content: flex-end;
+    }
+    .comment-as-label {
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+      margin-right: 2px;
+    }
+    .comment-as-select {
+      font-family: var(--font);
+      font-size: var(--text-xs);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      color: var(--text-muted);
+      padding: 3px 8px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color var(--dur-fast);
+    }
+    .comment-as-select:focus { border-color: var(--accent); }
+
+    .btn-sm { padding: 5px var(--sp-3); font-size: var(--text-xs); }
 
     /* ── Priority icon colours ──────────────────────────────────── */
     .pri-urgent { color: #EF4444; }
@@ -1753,9 +2073,442 @@
       color: var(--text-faint);
       padding: 0 1px;
     }
+
+    /* ================================================================
+       FOCUS PANEL
+       ================================================================ */
+
+    #focusPanel {
+      flex-shrink: 0;
+      width: 0;
+      overflow: hidden;
+      border-left: 1px solid transparent;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      transition: width .22s cubic-bezier(.4,0,.2,1),
+                  border-color .22s;
+    }
+
+    #focusPanel.open {
+      width: 420px;
+      border-left-color: var(--border);
+    }
+
+    .fp-inner {
+      width: 420px;          /* fixed so content doesn't reflow during animation */
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .fp-header {
+      padding: var(--sp-4) var(--sp-5);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .fp-header-top {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      margin-bottom: var(--sp-2);
+    }
+
+    .fp-task-id {
+      font-size: var(--text-xs);
+      font-family: var(--font-mono);
+      color: var(--text-faint);
+      flex: 1;
+    }
+
+    .fp-close {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-faint);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .12s, color .12s;
+    }
+
+    .fp-close:hover { background: var(--surface-2); color: var(--text); }
+
+    .fp-title {
+      font-size: var(--text-md);
+      font-weight: var(--weight-semi);
+      color: var(--text);
+      line-height: 1.35;
+      margin: 0 0 var(--sp-3);
+      letter-spacing: -.015em;
+      word-break: break-word;
+    }
+
+    .fp-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-2);
+      align-items: center;
+    }
+
+    .fp-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      border: 1px solid transparent;
+    }
+
+    /* Body / scroll area */
+    .fp-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: var(--text-faint) transparent;
+    }
+
+    .fp-section {
+      padding: var(--sp-4) var(--sp-5);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .fp-section:last-child { border-bottom: none; }
+
+    .fp-section-header {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      margin-bottom: var(--sp-3);
+    }
+
+    .fp-section-title {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semi);
+      color: var(--text-faint);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      flex: 1;
+    }
+
+    /* Description toggle */
+    .fp-desc-toggle {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .fp-toggle-btn {
+      padding: 2px 10px;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      border: none;
+      background: transparent;
+      color: var(--text-faint);
+      cursor: pointer;
+      transition: background .12s, color .12s;
+    }
+
+    .fp-toggle-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Markdown preview */
+    .fp-desc-preview {
+      min-height: 60px;
+      font-size: var(--text-sm);
+      line-height: 1.65;
+      color: var(--text);
+    }
+
+    .fp-desc-preview.md-empty {
+      color: var(--text-faint);
+      font-style: italic;
+    }
+
+    /* Markdown rendered styles */
+    .fp-desc-preview h1,
+    .fp-desc-preview h2,
+    .fp-desc-preview h3 {
+      font-weight: var(--weight-semi);
+      color: var(--text);
+      margin: var(--sp-3) 0 var(--sp-1);
+      line-height: 1.3;
+    }
+
+    .fp-desc-preview h1 { font-size: var(--text-lg); }
+    .fp-desc-preview h2 { font-size: var(--text-md); }
+    .fp-desc-preview h3 { font-size: var(--text-sm); }
+
+    .fp-desc-preview p  { margin: 0 0 var(--sp-2); }
+
+    .fp-desc-preview ul {
+      margin: 0 0 var(--sp-2);
+      padding-left: var(--sp-5);
+    }
+
+    .fp-desc-preview li { margin-bottom: 2px; }
+
+    .fp-desc-preview code {
+      font-family: var(--font-mono);
+      font-size: .85em;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 1px 5px;
+    }
+
+    .fp-desc-preview blockquote {
+      border-left: 3px solid var(--accent);
+      margin: 0 0 var(--sp-2);
+      padding: var(--sp-1) var(--sp-3);
+      color: var(--text-faint);
+      font-style: italic;
+      background: var(--surface-2);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .fp-desc-preview hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: var(--sp-3) 0;
+    }
+
+    .fp-desc-preview a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      transition: text-decoration-color .12s;
+    }
+
+    .fp-desc-preview a:hover { text-decoration-color: var(--accent); }
+
+    .fp-desc-preview strong { font-weight: var(--weight-bold); }
+    .fp-desc-preview em { font-style: italic; }
+
+    /* Edit textarea */
+    .fp-desc-textarea {
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 140px;
+      padding: var(--sp-3);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      resize: vertical;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .fp-desc-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(91,110,245,.15);
+    }
+
+    .fp-desc-hint {
+      margin-top: var(--sp-1);
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+    }
+
+    .fp-save-indicator {
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+      transition: opacity .3s;
+      opacity: 0;
+    }
+
+    .fp-save-indicator.visible { opacity: 1; }
+
+    .hidden { display: none !important; }
+
+    /* ================================================================
+       TOAST NOTIFICATIONS
+       ================================================================ */
+
+    .toast-stack {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+      pointer-events: none;
+      max-width: 400px;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: 11px 14px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      pointer-events: all;
+      position: relative;
+      overflow: hidden;
+      min-width: 260px;
+      max-width: 400px;
+      animation: toastIn .2s cubic-bezier(.4,0,.2,1) both;
+    }
+
+    .toast.leaving {
+      animation: toastOut .18s cubic-bezier(.4,0,.2,1) forwards;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(calc(100% + 24px)); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(calc(100% + 24px)); }
+    }
+
+    .toast-accent {
+      width: 3px;
+      align-self: stretch;
+      border-radius: 2px;
+      flex-shrink: 0;
+      margin-right: 2px;
+    }
+
+    .toast-icon {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toast-msg {
+      flex: 1;
+      font-size: var(--text-sm);
+      color: var(--text);
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toast-undo {
+      flex-shrink: 0;
+      padding: 3px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      color: var(--text);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      cursor: pointer;
+      transition: background .12s, border-color .12s;
+      white-space: nowrap;
+    }
+
+    .toast-undo:hover {
+      background: var(--surface-2);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .toast-close {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border: none;
+      background: transparent;
+      color: var(--text-faint);
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .12s, color .12s;
+    }
+
+    .toast-close:hover { background: var(--surface-2); color: var(--text); }
+
+    /* Progress bar — sits at the bottom of the toast */
+    .toast-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      background: currentColor;
+      opacity: .35;
+      transform-origin: left;
+      transition: none;
+    }
+
+    /* Colour variants */
+    .toast-success .toast-accent   { background: var(--success); }
+    .toast-success .toast-icon     { color: var(--success); }
+    .toast-success .toast-progress { color: var(--success); }
+
+    .toast-info .toast-accent   { background: var(--accent); }
+    .toast-info .toast-icon     { color: var(--accent); }
+    .toast-info .toast-progress { color: var(--accent); }
+
+    .toast-warning .toast-accent   { background: var(--warning); }
+    .toast-warning .toast-icon     { color: var(--warning); }
+    .toast-warning .toast-progress { color: var(--warning); }
+
+    .toast-danger .toast-accent   { background: var(--danger); }
+    .toast-danger .toast-icon     { color: var(--danger); }
+    .toast-danger .toast-progress { color: var(--danger); }
+
+    /* Delete button in focus panel header */
+    .fp-delete-btn {
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-faint);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: background .12s, border-color .12s, color .12s;
+    }
+
+    .fp-delete-btn:hover {
+      background: rgba(239,68,68,.08);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .fp-delete-btn svg { width: 12px; height: 12px; }
   </style>
 </head>
 <body>
+
+<a class="skip-link" href="#content">Passer au contenu principal</a>
 
 <div id="app">
 
@@ -1775,7 +2528,7 @@
       <span class="logo-badge">v0.1</span>
     </div>
 
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" aria-label="Navigation principale">
       <span class="nav-section-label">Vues</span>
 
       <button class="nav-item active" data-view="kanban">
@@ -1861,12 +2614,12 @@
     </header>
 
     <!-- Views -->
-    <div id="content">
+    <div id="content" tabindex="-1">
 
       <!-- KANBAN -->
-      <section class="view active" id="view-kanban">
+      <section class="view active" id="view-kanban" aria-label="Tableau Kanban">
         <!-- Toolbar / Filters -->
-        <div class="kanban-toolbar" id="kanbanToolbar">
+        <div class="kanban-toolbar" id="kanbanToolbar" role="toolbar" aria-label="Filtres">
           <span class="filter-label">Priorité</span>
           <div class="filter-group" id="filterPriority"></div>
           <div class="toolbar-sep"></div>
@@ -1980,13 +2733,119 @@
 
     </div>
   </div>
+
+  <!-- ============================================================
+       FOCUS PANEL (task detail + description + comments)
+       ============================================================ -->
+  <div id="focusPanel" role="complementary" aria-label="Détail de la tâche" aria-hidden="true">
+    <div class="fp-inner">
+
+      <!-- Header -->
+      <div class="fp-header">
+        <div class="fp-header-top">
+          <span id="fpPriIcon"></span>
+          <span class="fp-task-id" id="fpTaskId"></span>
+          <button class="fp-delete-btn" id="fpDeleteBtn" title="Supprimer la tâche">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="2 4 12 4"/><path d="M5 4V3a1 1 0 011-1h2a1 1 0 011 1v1"/>
+              <path d="M3 4l.8 8a1 1 0 001 .9h4.4a1 1 0 001-.9L11 4"/>
+            </svg>
+            Supprimer
+          </button>
+          <button class="fp-close" id="focusClose" aria-label="Fermer">×</button>
+        </div>
+        <h2 class="fp-title" id="fpTitle"></h2>
+        <div class="fp-meta-row" id="fpMetaRow"></div>
+      </div>
+
+      <!-- Scrollable body -->
+      <div class="fp-body">
+
+        <!-- Description -->
+        <div class="fp-section">
+          <div class="fp-section-header">
+            <span class="fp-section-title">Description</span>
+            <div class="fp-desc-toggle">
+              <button class="fp-toggle-btn active" id="fpPreviewBtn">Aperçu</button>
+              <button class="fp-toggle-btn" id="fpEditBtn">Éditer</button>
+            </div>
+            <span class="fp-save-indicator" id="fpSaveIndicator">Sauvegardé ✓</span>
+          </div>
+          <div class="fp-desc-preview" id="fpPreview"></div>
+          <textarea class="fp-desc-textarea hidden" id="fpDescTextarea"
+            placeholder="Décrivez la tâche…&#10;&#10;Markdown supporté :&#10;# Titre  **gras**  *italique*&#10;- liste  > citation  \`code\`  [lien](url)"></textarea>
+          <p class="fp-desc-hint hidden" id="fpDescHint">Ctrl+S pour sauvegarder · Aperçu auto après 600 ms</p>
+        </div>
+
+        <!-- Comments -->
+        <div class="fp-section">
+          <div class="fp-section-header">
+            <span class="fp-section-title">Discussion</span>
+            <span class="comment-count-badge" id="fpCommentCount">0</span>
+          </div>
+          <div class="comment-list" id="fpCommentList"></div>
+          <div class="comment-input-area">
+            <div class="comment-input-row">
+              <span class="comment-avatar-sm" id="fpCommentAvatar"></span>
+              <textarea class="comment-textarea" id="fpCommentText"
+                placeholder="Écrire un commentaire… (Ctrl+Entrée)" rows="3"></textarea>
+            </div>
+            <div class="comment-actions">
+              <span class="comment-as-label">En tant que</span>
+              <select class="comment-as-select" id="fpCommentAuthor"></select>
+              <button class="btn btn-primary btn-sm" id="fpCommentSubmit">Commenter</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.fp-body -->
+    </div><!-- /.fp-inner -->
+  </div><!-- /#focusPanel -->
+
+</div><!-- /#app -->
+
+<!-- ============================================================
+     TASK DETAIL & COMMENTS
+     ============================================================ -->
+<div class="detail-backdrop" id="detailModal" aria-hidden="true">
+  <div class="detail-box" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+    <div class="detail-header">
+      <span class="detail-pri-icon" id="dPriIcon"></span>
+      <h2 class="detail-title" id="dTitle"></h2>
+      <button class="detail-close" id="detailClose" aria-label="Fermer">×</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-meta" id="dMeta"></div>
+      <div class="detail-comments">
+        <div class="comment-list-header">
+          <span class="comment-list-title">Discussion</span>
+          <span class="comment-count-badge" id="dCommentCount">0</span>
+        </div>
+        <div class="comment-list" id="dCommentList"></div>
+        <div class="comment-input-area">
+          <div class="comment-input-row">
+            <span class="comment-avatar-sm" id="dCommentAvatar"></span>
+            <textarea class="comment-textarea" id="dCommentText"
+              placeholder="Écrire un commentaire… (Ctrl+Entrée pour envoyer)" rows="3"></textarea>
+          </div>
+          <div class="comment-actions">
+            <span class="comment-as-label">En tant que</span>
+            <select class="comment-as-select" id="dCommentAuthor"></select>
+            <button class="btn btn-primary btn-sm" id="dCommentSubmit">Commenter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ============================================================
      COMMAND PALETTE
      ============================================================ -->
-<div class="cmd-backdrop" id="cmdPalette">
-  <div class="cmd-box" role="dialog" aria-modal="true" aria-label="Palette de commandes">
+<div class="cmd-backdrop" id="cmdPalette" aria-hidden="true">
+  <div class="cmd-box" role="dialog" aria-modal="true" aria-labelledby="cmdPaletteLabel">
+    <span id="cmdPaletteLabel" class="sr-only">Palette de commandes</span>
     <div class="cmd-input-wrap">
       <svg class="cmd-search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor"
            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -2007,7 +2866,7 @@
 <!-- ============================================================
      HELP MODAL
      ============================================================ -->
-<div class="help-backdrop" id="helpModal">
+<div class="help-backdrop" id="helpModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
     <div class="help-header">
       <span class="help-title" id="helpTitle">Raccourcis clavier</span>
@@ -2107,6 +2966,67 @@
 <script>
   var _appInitDone = false; // set true after all modules are initialized
 
+  /* ================================================================
+     ACCESSIBILITY UTILITIES
+     ================================================================ */
+
+  /**
+   * Focus trap — keeps Tab / Shift+Tab cycling within `el`.
+   * Returns a cleanup function; call it to release the trap.
+   */
+  function focusTrap(el) {
+    const SEL = [
+      'a[href]',
+      'button:not([disabled])',
+      'textarea:not([disabled])',
+      'input:not([disabled])',
+      'select:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(',');
+
+    function handler(e) {
+      if (e.key !== 'Tab') return;
+      const nodes = [...el.querySelectorAll(SEL)].filter(n => {
+        if (n.offsetParent === null) return false; // hidden
+        const s = getComputedStyle(n);
+        return s.display !== 'none' && s.visibility !== 'hidden';
+      });
+      if (!nodes.length) { e.preventDefault(); return; }
+      const first = nodes[0], last = nodes[nodes.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+      }
+    }
+
+    el.addEventListener('keydown', handler);
+    return () => el.removeEventListener('keydown', handler);
+  }
+
+  /**
+   * Polite live region for screen-reader announcements.
+   * Usage: announce('Tâche créée');
+   */
+  const _liveRegion = (() => {
+    const el = document.createElement('div');
+    el.setAttribute('role', 'status');
+    el.setAttribute('aria-live', 'polite');
+    el.setAttribute('aria-atomic', 'true');
+    Object.assign(el.style, {
+      position:'absolute', width:'1px', height:'1px',
+      overflow:'hidden', clip:'rect(0,0,0,0)', whiteSpace:'nowrap',
+    });
+    document.body.appendChild(el);
+    return el;
+  })();
+
+  function announce(msg) {
+    _liveRegion.textContent = '';
+    // Force a DOM mutation so the same message triggers the live region again
+    requestAnimationFrame(() => { _liveRegion.textContent = msg; });
+  }
+
   /* ── Theme ──────────────────────────────────────────────────── */
   const html        = document.documentElement;
   const themeToggle = document.getElementById('themeToggle');
@@ -2136,13 +3056,11 @@
   }
 
   function applyThemeUI() {
-    if (isDark()) {
-      themeIcon.innerHTML = SVG_SUN;
-      themeLabel.textContent = 'Thème clair';
-    } else {
-      themeIcon.innerHTML = SVG_MOON;
-      themeLabel.textContent = 'Thème sombre';
-    }
+    const dark = isDark();
+    themeIcon.innerHTML   = dark ? SVG_SUN  : SVG_MOON;
+    themeLabel.textContent = dark ? 'Thème clair' : 'Thème sombre';
+    themeToggle.setAttribute('aria-pressed', String(dark));
+    themeToggle.setAttribute('aria-label', dark ? 'Activer le thème clair' : 'Activer le thème sombre');
   }
 
   function loadTheme() {
@@ -2178,7 +3096,11 @@
   const views     = document.querySelectorAll('.view');
 
   function switchView(viewId) {
-    navItems.forEach(btn => btn.classList.toggle('active', btn.dataset.view === viewId));
+    navItems.forEach(btn => {
+      const active = btn.dataset.view === viewId;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-current', active ? 'page' : 'false');
+    });
     views.forEach(v => v.classList.toggle('active', v.id === `view-${viewId}`));
     viewTitle.textContent = VIEW_TITLES[viewId] || viewId;
     localStorage.setItem('meridian:view', viewId);
@@ -2202,7 +3124,7 @@
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if (e.target.isContentEditable) return;
     // Ignore when any modal is open (except Esc)
-    const anyModalOpen = document.querySelector('.modal-backdrop.open, .help-backdrop.open, .cmd-backdrop.open');
+    const anyModalOpen = document.querySelector('.modal-backdrop.open, .help-backdrop.open, .cmd-backdrop.open, .detail-backdrop.open');
     if (anyModalOpen && e.key !== 'Escape') return;
 
     switch (e.key) {
@@ -2217,6 +3139,8 @@
         closeModal();
         closeHelp();
         closePalette();
+        closeDetail();
+        closeFocus();
         break;
     }
   });
@@ -2256,44 +3180,68 @@
   ];
 
   const PRIORITY_SVG = {
-    urgent: `<svg class="priority-icon pri-urgent" viewBox="0 0 13 13" fill="currentColor"><path d="M6.5 1L12 11H1L6.5 1z"/></svg>`,
-    high:   `<svg class="priority-icon pri-high"   viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 9l4.5-5 4.5 5"/></svg>`,
-    medium: `<svg class="priority-icon pri-medium" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="2" y1="6.5" x2="11" y2="6.5"/><line x1="2" y1="9.5" x2="11" y2="9.5"/></svg>`,
-    low:    `<svg class="priority-icon pri-low"    viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 4l4.5 5 4.5-5"/></svg>`,
+    urgent: `<svg class="priority-icon pri-urgent" viewBox="0 0 13 13" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6.5 1L12 11H1L6.5 1z"/></svg>`,
+    high:   `<svg class="priority-icon pri-high"   viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M2 9l4.5-5 4.5 5"/></svg>`,
+    medium: `<svg class="priority-icon pri-medium" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><line x1="2" y1="6.5" x2="11" y2="6.5"/><line x1="2" y1="9.5" x2="11" y2="9.5"/></svg>`,
+    low:    `<svg class="priority-icon pri-low"    viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M2 4l4.5 5 4.5-5"/></svg>`,
   };
 
   /* ── Seed data ──────────────────────────────────────────────── */
+  const NOW = Date.now();
+  const H = 3600000;
   const SEED = [
-    { id:'t-001', title:'Mettre en place le CI/CD GitHub Actions',       column:'backlog',    priority:'high',   tags:['infra'],             assignee:'da' },
-    { id:'t-002', title:'Redesign de la page d\'accueil',                 column:'inprogress', priority:'medium', tags:['design','frontend'],  assignee:'cl' },
-    { id:'t-003', title:'Corriger le bug de pagination sur mobile',       column:'inprogress', priority:'urgent', tags:['bug','frontend'],     assignee:'al' },
-    { id:'t-004', title:'Optimiser les requêtes N+1 sur l\'API produits', column:'review',     priority:'high',   tags:['backend'],            assignee:'bo' },
-    { id:'t-005', title:'Rédiger les specs du module facturation',        column:'backlog',    priority:'medium', tags:['feature'],            assignee:'al' },
-    { id:'t-006', title:'Mettre à jour les dépendances npm',              column:'done',       priority:'low',    tags:['infra'],              assignee:'da' },
-    { id:'t-007', title:'Ajouter les tests E2E sur le flow de login',     column:'backlog',    priority:'high',   tags:['backend','frontend'], assignee:'bo' },
-    { id:'t-008', title:'Créer le composant DataTable réutilisable',      column:'review',     priority:'medium', tags:['frontend','design'],  assignee:'cl' },
-    { id:'t-009', title:'Configurer Sentry pour le suivi d\'erreurs',     column:'done',       priority:'medium', tags:['infra'],              assignee:'da' },
-    { id:'t-010', title:'Refactoring du module auth JWT',                 column:'backlog',    priority:'low',    tags:['backend'],            assignee:'bo' },
+    { id:'t-001', title:'Mettre en place le CI/CD GitHub Actions',       column:'backlog',    priority:'high',   tags:['infra'],             assignee:'da', createdAt: NOW - 5*24*H, comments:[
+      { id:'c-001', author:'bo', text:'J\'ai commencé à regarder les templates GitHub Actions. Le workflow de build semble assez standard.', ts: NOW - 4*24*H },
+      { id:'c-002', author:'al', text:'Pense à ajouter les étapes de lint et de test unitaire en parallèle pour gagner du temps.', ts: NOW - 3*24*H },
+      { id:'c-003', author:'da', text:'Bonne idée. Je vais aussi configurer le cache npm pour accélérer les installations.', ts: NOW - 2*24*H },
+    ]},
+    { id:'t-002', title:'Redesign de la page d\'accueil',                 column:'inprogress', priority:'medium', tags:['design','frontend'],  assignee:'cl', createdAt: NOW - 8*24*H, comments:[
+      { id:'c-004', author:'cl', text:'Les maquettes Figma sont prêtes. J\'attends la validation de l\'équipe avant de coder.', ts: NOW - 6*24*H },
+      { id:'c-005', author:'bo', text:'Les maquettes ont l\'air bien ! Juste une question : on conserve le hero actuel ou on le remplace ?', ts: NOW - 5*24*H },
+    ]},
+    { id:'t-003', title:'Corriger le bug de pagination sur mobile',       column:'inprogress', priority:'urgent', tags:['bug','frontend'],     assignee:'al', createdAt: NOW - 2*24*H, comments:[
+      { id:'c-006', author:'al', text:'Reproduit sur iOS 17 et Android 14. Semble lié au calcul de `offsetWidth` dans le composant Pagination.', ts: NOW - 24*H },
+    ]},
+    { id:'t-004', title:'Optimiser les requêtes N+1 sur l\'API produits', column:'review',     priority:'high',   tags:['backend'],            assignee:'bo', createdAt: NOW - 10*24*H, comments:[] },
+    { id:'t-005', title:'Rédiger les specs du module facturation',        column:'backlog',    priority:'medium', tags:['feature'],            assignee:'al', createdAt: NOW - 7*24*H,  comments:[] },
+    { id:'t-006', title:'Mettre à jour les dépendances npm',              column:'done',       priority:'low',    tags:['infra'],              assignee:'da', createdAt: NOW - 14*24*H, comments:[
+      { id:'c-007', author:'da', text:'Fait. Toutes les dépendances sont à jour. Aucune breaking change détectée.', ts: NOW - 12*24*H },
+    ]},
+    { id:'t-007', title:'Ajouter les tests E2E sur le flow de login',     column:'backlog',    priority:'high',   tags:['backend','frontend'], assignee:'bo', createdAt: NOW - 6*24*H,  comments:[] },
+    { id:'t-008', title:'Créer le composant DataTable réutilisable',      column:'review',     priority:'medium', tags:['frontend','design'],  assignee:'cl', createdAt: NOW - 9*24*H,  comments:[] },
+    { id:'t-009', title:'Configurer Sentry pour le suivi d\'erreurs',     column:'done',       priority:'medium', tags:['infra'],              assignee:'da', createdAt: NOW - 20*24*H, comments:[
+      { id:'c-008', author:'da', text:'Sentry est configuré pour les envs staging et prod. Les alertes email sont activées.', ts: NOW - 18*24*H },
+      { id:'c-009', author:'bo', text:'Super ! Tu peux aussi activer le suivi des performances (tracing) si vous avez le quota.', ts: NOW - 17*24*H },
+    ]},
+    { id:'t-010', title:'Refactoring du module auth JWT',                 column:'backlog',    priority:'low',    tags:['backend'],            assignee:'bo', createdAt: NOW - 3*24*H,  comments:[] },
   ];
 
   /* ── Store ──────────────────────────────────────────────────── */
   const TASKS_KEY = 'meridian:tasks';
   let nextId = 11;
+  let nextCommentId = 10; // c-001..c-009 used in seed
 
   function loadTasks() {
     try {
       const raw = localStorage.getItem(TASKS_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        // compute nextId from existing
         parsed.forEach(t => {
           const n = parseInt(t.id.replace('t-', ''), 10);
           if (n >= nextId) nextId = n + 1;
+          // migration: ensure comments array and createdAt exist
+          if (!Array.isArray(t.comments)) t.comments = [];
+          if (t.description === undefined) t.description = '';
+          if (!t.createdAt) t.createdAt = Date.now();
+          t.comments.forEach(c => {
+            const cn = parseInt(c.id.replace('c-', ''), 10);
+            if (cn >= nextCommentId) nextCommentId = cn + 1;
+          });
         });
         return parsed;
       }
     } catch(_) {}
-    return SEED.map(t => ({ ...t }));
+    return SEED.map(t => ({ ...t, description: t.description || '', comments: (t.comments || []).map(c => ({ ...c })) }));
   }
 
   function saveTasks() {
@@ -2355,10 +3303,34 @@
 
     const priHtml = PRIORITY_SVG[task.priority] || '';
 
-    const card = document.createElement('div');
+    const commentCount = (task.comments || []).length;
+    const commentBadge = commentCount
+      ? `<span class="card-comment-count" title="${commentCount} commentaire${commentCount > 1 ? 's' : ''}">
+           <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round" width="12" height="12">
+             <path d="M12 8.5a1 1 0 01-1 1H4l-2.5 2V3a1 1 0 011-1h9a1 1 0 011 1z"/>
+           </svg>
+           ${commentCount}
+         </span>`
+      : '';
+
+    const pri    = getPriority(task.priority);
+    const col    = getColumn(task.column);
+    const ariaLabel = [
+      escHtml(task.title),
+      pri  ? `Priorité : ${pri.label}` : '',
+      col  ? `Colonne : ${col.label}`  : '',
+      a    ? `Assigné à ${a.name}`     : '',
+      (task.comments||[]).length ? `${task.comments.length} commentaire${task.comments.length > 1 ? 's' : ''}` : '',
+    ].filter(Boolean).join('. ');
+
+    const card = document.createElement('article');
     card.className = 'kanban-card' + (visible ? '' : ' filtered');
     card.dataset.id = task.id;
-    card.draggable = true;
+    card.draggable  = true;
+    card.tabIndex   = 0;
+    card.setAttribute('role', 'article');
+    card.setAttribute('aria-label', ariaLabel);
     card.innerHTML = `
       <div class="card-header">
         <span class="card-priority">${priHtml}</span>
@@ -2367,19 +3339,35 @@
       ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
       <div class="card-footer">
         <span class="card-id">${task.id}</span>
-        ${avatarHtml}
+        <span class="card-footer-right">${commentBadge}${avatarHtml}</span>
       </div>`;
 
-    // Drag events
+    // Drag events — use flag to suppress click after drag
+    let _dragged = false;
     card.addEventListener('dragstart', e => {
+      _dragged = true;
       dragTaskId = task.id;
       card.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
+      announce(`Déplacement de « ${task.title} »`);
     });
     card.addEventListener('dragend', () => {
       card.classList.remove('dragging');
       dragTaskId = null;
       document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+      setTimeout(() => { _dragged = false; }, 0);
+    });
+
+    // Click or Enter/Space → open focus panel
+    card.addEventListener('click', () => {
+      if (_dragged) return;
+      openFocus(task.id);
+    });
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openFocus(task.id);
+      }
     });
 
     return card;
@@ -2389,20 +3377,26 @@
     const colTasks = tasks.filter(t => t.column === col.id);
     const visibleCount = colTasks.filter(t => taskMatchesFilters(t)).length;
 
+    const taskCount = hasActiveFilters() ? visibleCount : colTasks.length;
+
     const el = document.createElement('div');
     el.className = 'kanban-col';
     el.dataset.col = col.id;
+    el.setAttribute('role', 'region');
+    el.setAttribute('aria-label', col.label);
     el.innerHTML = `
       <div class="kanban-col-header">
-        <span class="col-dot" style="background:${col.dot}"></span>
+        <span class="col-dot" style="background:${col.dot}" aria-hidden="true"></span>
         <span class="col-title">${col.label}</span>
-        <span class="col-count">${hasActiveFilters() ? visibleCount : colTasks.length}</span>
-        <button class="col-add-btn" data-col="${col.id}" title="Ajouter une tâche">
+        <span class="col-count" aria-label="${taskCount} tâche${taskCount !== 1 ? 's' : ''}">${taskCount}</span>
+        <button class="col-add-btn" data-col="${col.id}"
+                aria-label="Ajouter une tâche dans ${col.label}" type="button">
           <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"
-               stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg>
+               stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M7 2v10M2 7h10"/></svg>
         </button>
       </div>
-      <div class="kanban-col-body" id="col-body-${col.id}" role="list" aria-label="${col.label}">
+      <div class="kanban-col-body" id="col-body-${col.id}"
+           role="list" aria-label="Tâches — ${col.label}">
         <div class="drop-placeholder" aria-hidden="true"></div>
       </div>`;
 
@@ -2430,9 +3424,23 @@
       if (dragTaskId) {
         const task = tasks.find(t => t.id === dragTaskId);
         if (task && task.column !== col.id) {
+          const prevCol = task.column;
+          const prevColLabel = getColumn(prevCol)?.label || prevCol;
           task.column = col.id;
           saveTasks();
           renderBoard();
+          // Re-open focus panel on the same task if it was open
+          if (_focusTaskId === task.id) openFocus(task.id);
+          showToast(`Déplacée vers « ${col.label} »`, {
+            type: 'info',
+            undo() {
+              task.column = prevCol;
+              saveTasks();
+              renderBoard();
+              if (_focusTaskId === task.id) openFocus(task.id);
+              showToast(`Retour dans « ${prevColLabel} »`, { type: 'info' });
+            },
+          });
         }
       }
       dragOverCol = null;
@@ -2464,10 +3472,13 @@
       const el = document.getElementById(containerId);
       items.forEach(item => {
         const chip = document.createElement('button');
+        chip.type      = 'button';
         chip.className = 'filter-chip';
         chip.dataset.ft = type;
         chip.dataset.fv = item.id;
-        chip.innerHTML = `<span class="chip-dot" style="background:${item.color || item.dot || ''}"></span>${item.label || item.name}`;
+        chip.setAttribute('aria-pressed', 'false');
+        chip.setAttribute('aria-label', `Filtrer par ${item.label || item.name}`);
+        chip.innerHTML = `<span class="chip-dot" style="background:${item.color || item.dot || ''}" aria-hidden="true"></span>${item.label || item.name}`;
         el.appendChild(chip);
       });
     }
@@ -2482,10 +3493,12 @@
     });
   }
 
-  // Only updates classes — no DOM reconstruction
+  // Only updates classes/aria — no DOM reconstruction
   function updateFilterUI() {
     document.querySelectorAll('#kanbanToolbar [data-ft]').forEach(chip => {
-      chip.classList.toggle('active', activeFilters[chip.dataset.ft].has(chip.dataset.fv));
+      const pressed = activeFilters[chip.dataset.ft].has(chip.dataset.fv);
+      chip.classList.toggle('active', pressed);
+      chip.setAttribute('aria-pressed', String(pressed));
     });
     document.getElementById('filterClear').classList.toggle('hidden', !hasActiveFilters());
   }
@@ -2588,7 +3601,11 @@
 
   let modalEl = null;
 
+  let _modalPreFocus = null;
+  let _modalTrapRelease = null;
+
   function openModal(colId) {
+    _modalPreFocus = document.activeElement;
     if (!modalEl) modalEl = buildModal();
     modalEl.querySelector('#mTitle').value = '';
     modalEl.querySelector('#mColumn').value = colId;
@@ -2599,11 +3616,16 @@
       b.style.background = '';
     });
     modalEl.classList.add('open');
+    _modalTrapRelease = focusTrap(modalEl.querySelector('.modal'));
     setTimeout(() => modalEl.querySelector('#mTitle').focus(), 80);
   }
 
   function closeModal() {
-    if (modalEl) modalEl.classList.remove('open');
+    if (!modalEl) return;
+    modalEl.classList.remove('open');
+    if (_modalTrapRelease) { _modalTrapRelease(); _modalTrapRelease = null; }
+    _modalPreFocus?.focus();
+    _modalPreFocus = null;
   }
 
   function submitModal() {
@@ -2628,10 +3650,24 @@
       createdAt: Date.now(),
     };
 
+    task.comments    = [];
+    task.description = '';
+
     tasks.unshift(task);
     saveTasks();
     closeModal();
     renderBoard();
+
+    const shortTitle = task.title.length > 36 ? task.title.slice(0, 35) + '…' : task.title;
+    showToast(`Tâche « ${shortTitle} » créée`, {
+      type: 'success',
+      undo() {
+        const idx = tasks.indexOf(task);
+        if (idx !== -1) tasks.splice(idx, 1);
+        saveTasks();
+        renderBoard();
+      },
+    });
   }
 
   /* ── Utility ────────────────────────────────────────────────── */
@@ -3201,15 +4237,27 @@
   const _palInput   = document.getElementById('cmdInput');
   const _palResults = document.getElementById('cmdResults');
 
+  let _palPreFocus = null;
+  let _palTrapRelease = null;
+
   function openPalette() {
+    _palPreFocus = document.activeElement;
     _palActive = -1;
     _palInput.value = '';
     _palEl.classList.add('open');
+    _palEl.removeAttribute('aria-hidden');
+    _palTrapRelease = focusTrap(document.querySelector('.cmd-box'));
     _palInput.focus();
     _renderPaletteResults('');
   }
 
-  function closePalette() { _palEl.classList.remove('open'); }
+  function closePalette() {
+    _palEl.classList.remove('open');
+    _palEl.setAttribute('aria-hidden', 'true');
+    if (_palTrapRelease) { _palTrapRelease(); _palTrapRelease = null; }
+    _palPreFocus?.focus();
+    _palPreFocus = null;
+  }
 
   function _renderPaletteResults(query) {
     _palItems = [];
@@ -3317,12 +4365,622 @@
      ================================================================ */
   const _helpEl = document.getElementById('helpModal');
 
-  function openHelp()  { _helpEl.classList.add('open'); }
-  function closeHelp() { _helpEl.classList.remove('open'); }
+  let _helpPreFocus  = null;
+  let _helpTrapRelease = null;
+
+  function openHelp() {
+    _helpPreFocus = document.activeElement;
+    _helpEl.classList.add('open');
+    _helpEl.removeAttribute('aria-hidden');
+    _helpTrapRelease = focusTrap(_helpEl.querySelector('.modal'));
+    setTimeout(() => document.getElementById('helpCloseBtn').focus(), 80);
+  }
+
+  function closeHelp() {
+    _helpEl.classList.remove('open');
+    _helpEl.setAttribute('aria-hidden', 'true');
+    if (_helpTrapRelease) { _helpTrapRelease(); _helpTrapRelease = null; }
+    _helpPreFocus?.focus();
+    _helpPreFocus = null;
+  }
 
   document.getElementById('helpBtn').addEventListener('click', openHelp);
   document.getElementById('helpCloseBtn').addEventListener('click', closeHelp);
   _helpEl.addEventListener('click', e => { if (e.target === _helpEl) closeHelp(); });
+
+  /* ================================================================
+     TOAST NOTIFICATIONS
+     ================================================================ */
+
+  (function () {
+    const ICONS = {
+      success: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="8" cy="8" r="7"/><path d="M5 8l2 2 4-4"/>
+                </svg>`,
+      info:    `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="8" cy="8" r="7"/><line x1="8" y1="7" x2="8" y2="11"/>
+                  <circle cx="8" cy="5" r=".5" fill="currentColor" stroke="none"/>
+                </svg>`,
+      warning: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 2L1.5 13h13z"/><line x1="8" y1="6" x2="8" y2="10"/>
+                  <circle cx="8" cy="12" r=".5" fill="currentColor" stroke="none"/>
+                </svg>`,
+      danger:  `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="8" cy="8" r="7"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5"/>
+                </svg>`,
+    };
+
+    let _container = null;
+    function getContainer() {
+      if (!_container) {
+        _container = document.createElement('div');
+        _container.className = 'toast-stack';
+        _container.setAttribute('role', 'region');
+        _container.setAttribute('aria-label', 'Notifications');
+        document.body.appendChild(_container);
+      }
+      return _container;
+    }
+
+    window.showToast = function showToast(msg, { type = 'success', undo = null, duration = 4200 } = {}) {
+      const container = getContainer();
+
+      // Announce to screen readers via the live region
+      announce(msg + (undo ? ' — Annuler disponible.' : ''));
+
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.setAttribute('role', 'alert');
+      toast.setAttribute('aria-atomic', 'true');
+      toast.innerHTML = `
+        <span class="toast-accent"></span>
+        <span class="toast-icon">${ICONS[type] || ICONS.info}</span>
+        <span class="toast-msg" title="${escHtml(msg)}">${escHtml(msg)}</span>
+        ${undo ? `<button class="toast-undo">Annuler</button>` : ''}
+        <button class="toast-close" aria-label="Fermer">×</button>
+        <div class="toast-progress" id="tp-${Date.now()}"></div>`;
+
+      const progress = toast.querySelector('.toast-progress');
+      let rafId, startTime = null, elapsed = 0, dismissed = false;
+
+      function dismiss(runUndo = false) {
+        if (dismissed) return;
+        dismissed = true;
+        cancelAnimationFrame(rafId);
+        toast.classList.add('leaving');
+        toast.addEventListener('animationend', () => toast.remove(), { once: true });
+        if (runUndo && undo) undo();
+      }
+
+      function tick(ts) {
+        if (!startTime) startTime = ts;
+        elapsed = ts - startTime;
+        const pct = Math.max(0, 1 - elapsed / duration);
+        progress.style.width = (pct * 100) + '%';
+        if (elapsed < duration) rafId = requestAnimationFrame(tick);
+        else dismiss();
+      }
+      rafId = requestAnimationFrame(tick);
+
+      toast.addEventListener('mouseenter', () => { cancelAnimationFrame(rafId); });
+      toast.addEventListener('mouseleave', () => {
+        startTime = performance.now() - elapsed;
+        rafId = requestAnimationFrame(tick);
+      });
+
+      toast.querySelector('.toast-close').addEventListener('click', () => dismiss());
+      if (undo) toast.querySelector('.toast-undo').addEventListener('click', () => dismiss(true));
+
+      container.appendChild(toast);
+
+      // cap stack at 5
+      const all = container.querySelectorAll('.toast:not(.leaving)');
+      if (all.length > 5) all[0].querySelector('.toast-close').click();
+    };
+  })();
+
+  /* ================================================================
+     FOCUS PANEL — rich-text description + comments
+     ================================================================ */
+
+  const _fp            = document.getElementById('focusPanel');
+  const _fpTitle       = document.getElementById('fpTitle');
+  const _fpTaskId      = document.getElementById('fpTaskId');
+  const _fpPriIcon     = document.getElementById('fpPriIcon');
+  const _fpMetaRow     = document.getElementById('fpMetaRow');
+  const _fpPreview     = document.getElementById('fpPreview');
+  const _fpTextarea    = document.getElementById('fpDescTextarea');
+  const _fpDescHint    = document.getElementById('fpDescHint');
+  const _fpSaveInd     = document.getElementById('fpSaveIndicator');
+  const _fpPreviewBtn  = document.getElementById('fpPreviewBtn');
+  const _fpEditBtn     = document.getElementById('fpEditBtn');
+  const _fpCommentList = document.getElementById('fpCommentList');
+  const _fpCommentCount= document.getElementById('fpCommentCount');
+  const _fpCommentText = document.getElementById('fpCommentText');
+  const _fpCommentAuth = document.getElementById('fpCommentAuthor');
+  const _fpCommentAvtr = document.getElementById('fpCommentAvatar');
+  const _fpCommentSub  = document.getElementById('fpCommentSubmit');
+
+  let _focusTaskId    = null;
+  let _fpDescMode     = 'preview';   // 'preview' | 'edit'
+  let _fpSaveTimer    = null;
+  let _fpSaveFlashTimer = null;
+
+  /* ── Simple markdown parser ─────────────────────────────────── */
+  function parseMarkdown(md) {
+    if (!md || !md.trim()) {
+      return '<span class="md-empty" style="color:var(--text-faint);font-style:italic">Aucune description — cliquez sur <strong>Éditer</strong> pour commencer.</span>';
+    }
+
+    function esc(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function inline(s) {
+      return esc(s)
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    }
+
+    const lines = md.split('\n');
+    const out   = [];
+    let listItems = [];
+
+    function flushList() {
+      if (listItems.length) {
+        out.push('<ul>' + listItems.map(li => `<li>${inline(li)}</li>`).join('') + '</ul>');
+        listItems = [];
+      }
+    }
+
+    for (const raw of lines) {
+      let m;
+      if ((m = raw.match(/^(#{1,3})\s(.+)/))) {
+        flushList();
+        const lv = m[1].length;
+        out.push(`<h${lv}>${inline(m[2])}</h${lv}>`);
+      } else if (/^---+\s*$/.test(raw)) {
+        flushList(); out.push('<hr>');
+      } else if ((m = raw.match(/^>\s(.+)/))) {
+        flushList(); out.push(`<blockquote>${inline(m[1])}</blockquote>`);
+      } else if ((m = raw.match(/^[-*]\s(.+)/))) {
+        listItems.push(m[1]);
+      } else if (raw.trim() === '') {
+        flushList();
+      } else {
+        flushList(); out.push(`<p>${inline(raw)}</p>`);
+      }
+    }
+    flushList();
+    return out.join('');
+  }
+
+  /* ── Populate author selector ───────────────────────────────── */
+  ASSIGNEES.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a.id;
+    opt.textContent = a.name;
+    _fpCommentAuth.appendChild(opt);
+  });
+
+  /* ── Render helpers ─────────────────────────────────────────── */
+  function renderFocusMeta(task) {
+    const a   = getAssignee(task.assignee);
+    const col = getColumn(task.column);
+    const pri = getPriority(task.priority);
+
+    const colColor = col ? col.dot : '#888';
+    const priColor = pri ? pri.color : '#888';
+
+    _fpMetaRow.innerHTML = `
+      <span class="fp-badge" style="background:${colColor}18;color:${colColor};border-color:${colColor}33">
+        <span style="width:6px;height:6px;border-radius:50%;background:${colColor};flex-shrink:0"></span>
+        ${escHtml(col ? col.label : task.column)}
+      </span>
+      <span class="fp-badge" style="background:${priColor}18;color:${priColor};border-color:${priColor}33">
+        ${PRIORITY_SVG[task.priority] || ''} ${escHtml(pri ? pri.label : task.priority)}
+      </span>
+      ${a ? `<span class="fp-badge" style="background:${a.color}18;color:${a.color};border-color:${a.color}33">
+        <span class="assignee-avatar" style="background:${a.color};width:16px;height:16px;font-size:8px">${escHtml(a.initials)}</span>
+        ${escHtml(a.name)}
+      </span>` : ''}`;
+  }
+
+  function renderFocusComments(task) {
+    const comments = task.comments || [];
+    _fpCommentCount.textContent = comments.length;
+
+    if (!comments.length) {
+      _fpCommentList.innerHTML = '<p class="comment-empty">Aucun commentaire. Soyez le premier à réagir !</p>';
+      return;
+    }
+
+    _fpCommentList.innerHTML = comments.map(c => {
+      const author  = getAssignee(c.author);
+      const initials = author ? escHtml(author.initials) : '?';
+      const name     = author ? escHtml(author.name)     : escHtml(c.author);
+      const color    = author ? author.color              : '#888';
+      return `<div class="comment-item">
+        <span class="comment-avatar-sm" style="background:${color}">${initials}</span>
+        <div class="comment-bubble">
+          <div class="comment-meta-row">
+            <span class="comment-author">${name}</span>
+            <span class="comment-time">${formatRelTime(c.ts)}</span>
+          </div>
+          <p class="comment-text">${escHtml(c.text)}</p>
+        </div>
+      </div>`;
+    }).join('');
+
+    _fpCommentList.scrollTop = _fpCommentList.scrollHeight;
+  }
+
+  function renderFocusPreview() {
+    _fpPreview.innerHTML = parseMarkdown(_fpTextarea.value || (tasks.find(t => t.id === _focusTaskId) || {}).description || '');
+  }
+
+  /* ── Description mode toggle ────────────────────────────────── */
+  function setFpDescMode(mode) {
+    _fpDescMode = mode;
+    if (mode === 'edit') {
+      _fpPreview.classList.add('hidden');
+      _fpTextarea.classList.remove('hidden');
+      _fpDescHint.classList.remove('hidden');
+      _fpPreviewBtn.classList.remove('active');
+      _fpEditBtn.classList.add('active');
+      _fpTextarea.focus();
+    } else {
+      renderFocusPreview();
+      _fpPreview.classList.remove('hidden');
+      _fpTextarea.classList.add('hidden');
+      _fpDescHint.classList.add('hidden');
+      _fpPreviewBtn.classList.add('active');
+      _fpEditBtn.classList.remove('active');
+    }
+  }
+
+  _fpPreviewBtn.addEventListener('click', () => setFpDescMode('preview'));
+  _fpEditBtn.addEventListener('click',   () => setFpDescMode('edit'));
+
+  /* ── Auto-save description (debounced 600 ms) ───────────────── */
+  function flashSaved() {
+    _fpSaveInd.classList.add('visible');
+    clearTimeout(_fpSaveFlashTimer);
+    _fpSaveFlashTimer = setTimeout(() => _fpSaveInd.classList.remove('visible'), 1800);
+  }
+
+  _fpTextarea.addEventListener('input', () => {
+    clearTimeout(_fpSaveTimer);
+    _fpSaveTimer = setTimeout(() => {
+      const task = tasks.find(t => t.id === _focusTaskId);
+      if (!task) return;
+      task.description = _fpTextarea.value;
+      saveTasks();
+      flashSaved();
+    }, 600);
+  });
+
+  /* Ctrl+S saves immediately */
+  _fpTextarea.addEventListener('keydown', e => {
+    if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      clearTimeout(_fpSaveTimer);
+      const task = tasks.find(t => t.id === _focusTaskId);
+      if (task) {
+        task.description = _fpTextarea.value;
+        saveTasks();
+        flashSaved();
+        setFpDescMode('preview');
+      }
+    }
+  });
+
+  /* ── Add comment ────────────────────────────────────────────── */
+  function addFocusComment(authorId, text) {
+    const task = tasks.find(t => t.id === _focusTaskId);
+    if (!task || !text.trim()) return;
+    const id = 'c-' + String(nextCommentId++).padStart(3, '0');
+    task.comments.push({ id, author: authorId, text: text.trim(), ts: Date.now() });
+    saveTasks();
+    renderFocusComments(task);
+    renderBoard(); // update card comment badges
+  }
+
+  /* Author avatar preview */
+  _fpCommentAuth.addEventListener('change', () => {
+    const a = getAssignee(_fpCommentAuth.value);
+    if (a) { _fpCommentAvtr.textContent = a.initials; _fpCommentAvtr.style.background = a.color; }
+  });
+
+  _fpCommentSub.addEventListener('click', () => {
+    addFocusComment(_fpCommentAuth.value, _fpCommentText.value);
+    _fpCommentText.value = '';
+    _fpCommentText.focus();
+  });
+
+  _fpCommentText.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      addFocusComment(_fpCommentAuth.value, _fpCommentText.value);
+      _fpCommentText.value = '';
+    }
+  });
+
+  /* ── Open / close ───────────────────────────────────────────── */
+  let _fpPreFocus = null;
+
+  function openFocus(taskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    // Save focus origin only when opening for a new task (not refreshing while already open)
+    if (_focusTaskId !== taskId) _fpPreFocus = document.activeElement;
+    _focusTaskId = taskId;
+
+    // Header
+    _fpPriIcon.innerHTML  = PRIORITY_SVG[task.priority] || '';
+    _fpTaskId.textContent = task.id;
+    _fpTitle.textContent  = task.title;
+    _fp.setAttribute('aria-label', `Détail — ${task.title}`);
+    renderFocusMeta(task);
+
+    // Description — start in preview mode
+    _fpTextarea.value = task.description || '';
+    setFpDescMode('preview');
+
+    // Comments
+    renderFocusComments(task);
+
+    // Author selector avatar
+    const a = getAssignee(_fpCommentAuth.value || ASSIGNEES[0].id);
+    if (a) { _fpCommentAvtr.textContent = a.initials; _fpCommentAvtr.style.background = a.color; }
+
+    _fp.classList.add('open');
+    _fp.removeAttribute('aria-hidden');
+    _fpCommentText.value = '';
+
+    // Move focus into the panel (to the close button)
+    setTimeout(() => document.getElementById('focusClose').focus(), 60);
+    announce(`Fiche ouverte : ${task.title}`);
+  }
+
+  function closeFocus() {
+    // flush any pending description save
+    if (_fpSaveTimer) {
+      clearTimeout(_fpSaveTimer);
+      const task = tasks.find(t => t.id === _focusTaskId);
+      if (task) { task.description = _fpTextarea.value; saveTasks(); }
+      _fpSaveTimer = null;
+    }
+    _fp.classList.remove('open');
+    _fp.setAttribute('aria-hidden', 'true');
+    _focusTaskId = null;
+    _fpPreFocus?.focus();
+    _fpPreFocus = null;
+  }
+
+  document.getElementById('focusClose').addEventListener('click', closeFocus);
+
+  /* ── Delete task ─────────────────────────────────────────────── */
+  document.getElementById('fpDeleteBtn').addEventListener('click', () => {
+    const taskId = _focusTaskId;
+    const task   = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    const idx        = tasks.indexOf(task);
+    const snapshot   = JSON.parse(JSON.stringify(task)); // deep clone
+    const shortTitle = task.title.length > 36 ? task.title.slice(0, 35) + '…' : task.title;
+
+    // Remove & persist
+    tasks.splice(idx, 1);
+    saveTasks();
+    closeFocus();
+    renderBoard();
+
+    showToast(`« ${shortTitle} » supprimée`, {
+      type: 'danger',
+      undo() {
+        // re-insert at original position (or end if out of range)
+        const insertAt = Math.min(idx, tasks.length);
+        tasks.splice(insertAt, 0, snapshot);
+        saveTasks();
+        renderBoard();
+        openFocus(snapshot.id);
+        showToast(`« ${shortTitle} » restaurée`, { type: 'success' });
+      },
+    });
+  });
+
+  /* ================================================================
+     TASK DETAIL & COMMENTS
+     ================================================================ */
+
+  const _detailEl     = document.getElementById('detailModal');
+  const _dTitle       = document.getElementById('dTitle');
+  const _dPriIcon     = document.getElementById('dPriIcon');
+  const _dMeta        = document.getElementById('dMeta');
+  const _dCommentList = document.getElementById('dCommentList');
+  const _dCommentCount= document.getElementById('dCommentCount');
+  const _dCommentText = document.getElementById('dCommentText');
+  const _dCommentAuthor = document.getElementById('dCommentAuthor');
+  const _dCommentAvatar = document.getElementById('dCommentAvatar');
+  const _dCommentSubmit = document.getElementById('dCommentSubmit');
+
+  let _detailTaskId = null;
+
+  /* Populate the author selector */
+  ASSIGNEES.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a.id;
+    opt.textContent = a.name;
+    _dCommentAuthor.appendChild(opt);
+  });
+
+  function formatRelTime(ts) {
+    const diff = Date.now() - ts;
+    const m = Math.floor(diff / 60000);
+    if (m < 1)  return 'à l\'instant';
+    if (m < 60) return `il y a ${m} min`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `il y a ${h} h`;
+    const d = Math.floor(h / 24);
+    if (d < 30) return `il y a ${d} j`;
+    return new Date(ts).toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+  }
+
+  function renderDetailMeta(task) {
+    const a   = getAssignee(task.assignee);
+    const col = getColumn(task.column);
+    const pri = getPriority(task.priority);
+    const tagsHtml = task.tags.map(tid => {
+      const tag = getTag(tid);
+      if (!tag) return '';
+      return `<span class="tag-chip" style="background:${tag.color}1A;color:${tag.color};border-color:${tag.color}33">
+        <span class="tag-dot" style="background:${tag.color}"></span>${escHtml(tag.label)}
+      </span>`;
+    }).join('');
+    const created = task.createdAt
+      ? new Date(task.createdAt).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' })
+      : '—';
+
+    _dMeta.innerHTML = `
+      <div class="meta-group">
+        <span class="meta-label">Statut</span>
+        <span class="meta-value">
+          <span class="col-dot" style="background:${col ? col.dot : '#999'}"></span>
+          ${escHtml(col ? col.label : task.column)}
+        </span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Priorité</span>
+        <span class="meta-value">${PRIORITY_SVG[task.priority] || ''} ${escHtml(pri ? pri.label : task.priority)}</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Assigné à</span>
+        <span class="meta-value">${a
+          ? `<span class="assignee-avatar" style="background:${a.color};width:18px;height:18px;font-size:9px">${escHtml(a.initials)}</span> ${escHtml(a.name)}`
+          : '—'}</span>
+      </div>
+      ${task.tags.length ? `<div class="meta-group"><span class="meta-label">Tags</span><span class="meta-value" style="flex-wrap:wrap;gap:4px">${tagsHtml}</span></div>` : ''}
+      <div class="meta-group">
+        <span class="meta-label">Créé le</span>
+        <span class="meta-value">${created}</span>
+      </div>`;
+  }
+
+  function renderComments(task) {
+    const comments = task.comments || [];
+    _dCommentCount.textContent = comments.length;
+
+    if (!comments.length) {
+      _dCommentList.innerHTML = `<p class="comment-empty">Aucun commentaire. Soyez le premier à réagir !</p>`;
+      return;
+    }
+
+    _dCommentList.innerHTML = comments.map(c => {
+      const author = getAssignee(c.author);
+      const initials = author ? escHtml(author.initials) : '?';
+      const name     = author ? escHtml(author.name) : escHtml(c.author);
+      const color    = author ? author.color : '#888';
+      return `<div class="comment-item">
+        <span class="comment-avatar-sm" style="background:${color}">${initials}</span>
+        <div class="comment-bubble">
+          <div class="comment-meta-row">
+            <span class="comment-author">${name}</span>
+            <span class="comment-time">${formatRelTime(c.ts)}</span>
+          </div>
+          <p class="comment-text">${escHtml(c.text)}</p>
+        </div>
+      </div>`;
+    }).join('');
+
+    // scroll to bottom
+    _dCommentList.scrollTop = _dCommentList.scrollHeight;
+  }
+
+  let _detailPreFocus  = null;
+  let _detailTrapRelease = null;
+
+  function openDetail(taskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+    _detailPreFocus  = document.activeElement;
+    _detailTaskId = taskId;
+
+    _dTitle.textContent  = task.title;
+    _dPriIcon.innerHTML  = PRIORITY_SVG[task.priority] || '';
+
+    renderDetailMeta(task);
+    renderComments(task);
+
+    const selectedAuthor = getAssignee(_dCommentAuthor.value);
+    if (selectedAuthor) {
+      _dCommentAvatar.textContent = selectedAuthor.initials;
+      _dCommentAvatar.style.background = selectedAuthor.color;
+    }
+
+    _detailEl.classList.add('open');
+    _detailEl.removeAttribute('aria-hidden');
+    _detailTrapRelease = focusTrap(document.querySelector('.detail-box'));
+    _dCommentText.value = '';
+    setTimeout(() => _dCommentText.focus(), 50);
+  }
+
+  function closeDetail() {
+    _detailEl.classList.remove('open');
+    _detailEl.setAttribute('aria-hidden', 'true');
+    _detailTaskId = null;
+    if (_detailTrapRelease) { _detailTrapRelease(); _detailTrapRelease = null; }
+    _detailPreFocus?.focus();
+    _detailPreFocus = null;
+  }
+
+  function addComment(taskId, authorId, text) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task || !text.trim()) return;
+    const id = 'c-' + String(nextCommentId++).padStart(3, '0');
+    task.comments.push({ id, author: authorId, text: text.trim(), ts: Date.now() });
+    saveTasks();
+    renderComments(task);
+    renderDetailMeta(task);
+    // re-render the card to update comment count badge
+    renderBoard();
+  }
+
+  /* Update avatar preview when author selector changes */
+  _dCommentAuthor.addEventListener('change', () => {
+    const a = getAssignee(_dCommentAuthor.value);
+    if (a) {
+      _dCommentAvatar.textContent = a.initials;
+      _dCommentAvatar.style.background = a.color;
+    }
+  });
+
+  /* Submit via button */
+  _dCommentSubmit.addEventListener('click', () => {
+    addComment(_detailTaskId, _dCommentAuthor.value, _dCommentText.value);
+    _dCommentText.value = '';
+    _dCommentText.focus();
+  });
+
+  /* Submit via Ctrl+Enter */
+  _dCommentText.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      addComment(_detailTaskId, _dCommentAuthor.value, _dCommentText.value);
+      _dCommentText.value = '';
+    }
+  });
+
+  /* Close on backdrop click or close button */
+  document.getElementById('detailClose').addEventListener('click', closeDetail);
+  _detailEl.addEventListener('click', e => { if (e.target === _detailEl) closeDetail(); });
 
   /* ── App ready ── restore last view ─────────────────────────── */
   _appInitDone = true;
