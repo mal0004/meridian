@@ -2,15 +2,20 @@
 
 > Application de gestion de projet complète — un seul fichier HTML, zéro dépendance.
 
-[![Démo live](https://img.shields.io/badge/Démo-mal0004.github.io%2Fmeridian-5B6EF5?style=flat-square&logo=github)](https://mal0004.github.io/meridian/)
+[![Landing page](https://img.shields.io/badge/Landing-mal0004.github.io%2Fmeridian-5B6EF5?style=flat-square&logo=github)](https://mal0004.github.io/meridian/)
 ![Version](https://img.shields.io/badge/version-0.5.0-5B6EF5?style=flat-square)
 ![Taille](https://img.shields.io/badge/taille-~160%20KB-22C55E?style=flat-square)
 ![Dépendances](https://img.shields.io/badge/dépendances-0-F59E0B?style=flat-square)
 [![Licence](https://img.shields.io/badge/licence-MIT-9898AA?style=flat-square)](https://github.com/mal0004/meridian/blob/master/LICENSE)
 
-**[→ Ouvrir la démo](https://mal0004.github.io/meridian/)** · **[Code source](https://github.com/mal0004/meridian)**
+**[→ Présentation](https://mal0004.github.io/meridian/)** · **[→ Ouvrir l'application](https://mal0004.github.io/meridian/app.html)** · **[Code source](https://github.com/mal0004/meridian)**
 
-**Meridian** est un gestionnaire de projet inspiré de Linear et Craft, livré en un seul fichier `index.html` autonome. Aucun serveur, aucun bundler, aucun framework — ouvrez le fichier dans un navigateur et commencez à travailler.
+**Meridian** est un gestionnaire de projet inspiré de Linear et Craft, livré en deux fichiers HTML autonomes. Aucun serveur, aucun bundler, aucun framework — ouvrez un fichier dans un navigateur et commencez à travailler.
+
+| Fichier | Rôle |
+|---------|------|
+| `index.html` | Landing page — présentation du projet |
+| `app.html` | Application Kanban complète |
 
 ---
 
@@ -99,10 +104,10 @@
 
 ## Architecture du code
 
-Tout le projet tient dans **un seul fichier** `index.html` (~5 000 lignes), organisé en sections clairement délimitées.
+L'application tient dans **un seul fichier** `app.html` (~5 000 lignes), organisé en sections clairement délimitées.
 
 ```
-index.html
+app.html
 ├── <head>
 │   └── <style>
 │       ├── Design system (tokens CSS, variables sémantiques)
@@ -207,10 +212,15 @@ Les tokens CSS sont définis en variables sur `:root` et remplacés par les over
 git clone https://github.com/mal0004/meridian.git
 cd meridian
 
-# Ouvrir directement dans le navigateur
+# Ouvrir la landing page
 open index.html          # macOS
 start index.html         # Windows
 xdg-open index.html      # Linux
+
+# Ouvrir directement l'application
+open app.html            # macOS
+start app.html           # Windows
+xdg-open app.html        # Linux
 ```
 
 Aucune installation, aucun `npm install`, aucun serveur local requis.
@@ -253,7 +263,7 @@ git clone https://github.com/VOTRE-USERNAME/meridian.git
 # 2. Créer une branche descriptive
 git checkout -b feat/nom-de-la-fonctionnalite
 
-# 3. Modifier index.html
+# 3. Modifier app.html (application) ou index.html (landing page)
 # 4. Tester dans Chrome, Firefox et Safari (desktop)
 # 5. Pousser et ouvrir une Pull Request
 git push origin feat/nom-de-la-fonctionnalite
@@ -262,7 +272,7 @@ git push origin feat/nom-de-la-fonctionnalite
 ### Conventions de code
 
 - **Pas de framework, pas de bundler** — vanilla JS ES2020+ uniquement
-- **Tout dans `index.html`** — pas de fichiers séparés CSS/JS
+- **Tout dans `app.html`** — pas de fichiers séparés CSS/JS
 - **Variables CSS** pour toute valeur visuelle — pas de couleur hardcodée hors du design system
 - **`escHtml()`** obligatoire sur tout contenu utilisateur injecté dans le DOM
 - **Event delegation** préféré à l'attachement de listeners en boucle
@@ -347,7 +357,8 @@ Distribué sous licence MIT. Voir [`LICENSE`](LICENSE) pour le texte complet.
 <div align="center">
   <sub>
     Construit avec ♥ en HTML / CSS / JS vanilla · Aucune dépendance · Fonctionne partout<br>
-    <a href="https://mal0004.github.io/meridian/">Démo live</a> ·
+    <a href="https://mal0004.github.io/meridian/">Landing page</a> ·
+    <a href="https://mal0004.github.io/meridian/app.html">Application</a> ·
     <a href="https://github.com/mal0004/meridian">GitHub</a> ·
     <a href="https://github.com/mal0004/meridian/issues">Signaler un bug</a>
   </sub>
