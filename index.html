@@ -1,0 +1,3333 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meridian</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DESIGN SYSTEM — MERIDIAN
+       ============================================================ */
+
+    /* --- Tokens ------------------------------------------------- */
+    :root {
+      /* Brand */
+      --accent:         #5B6EF5;
+      --accent-hover:   #4A5CE0;
+      --accent-subtle:  #EEF0FE;
+
+      /* Neutral scale */
+      --gray-50:  #F8F8FA;
+      --gray-100: #F1F1F4;
+      --gray-200: #E4E4EA;
+      --gray-300: #CBCBD6;
+      --gray-400: #9898AA;
+      --gray-500: #6E6E82;
+      --gray-600: #4B4B5E;
+      --gray-700: #32323F;
+      --gray-800: #1E1E28;
+      --gray-900: #111118;
+
+      /* Semantic — light */
+      --bg:             #FFFFFF;
+      --bg-subtle:      var(--gray-50);
+      --bg-elevated:    #FFFFFF;
+      --border:         var(--gray-200);
+      --border-strong:  var(--gray-300);
+      --text:           var(--gray-900);
+      --text-muted:     var(--gray-500);
+      --text-faint:     var(--gray-400);
+      --sidebar-bg:     var(--gray-50);
+      --sidebar-border: var(--gray-200);
+
+      /* Status */
+      --success:  #22C55E;
+      --warning:  #F59E0B;
+      --danger:   #EF4444;
+      --info:     #3B82F6;
+
+      /* Typography */
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+      --text-xs:   11px;
+      --text-sm:   13px;
+      --text-base: 14px;
+      --text-md:   15px;
+      --text-lg:   17px;
+      --text-xl:   20px;
+      --text-2xl:  24px;
+      --text-3xl:  30px;
+
+      --weight-regular: 400;
+      --weight-medium:  500;
+      --weight-semi:    600;
+      --weight-bold:    700;
+
+      --leading-tight:  1.25;
+      --leading-normal: 1.5;
+      --leading-loose:  1.75;
+
+      /* Spacing */
+      --sp-1:  4px;
+      --sp-2:  8px;
+      --sp-3:  12px;
+      --sp-4:  16px;
+      --sp-5:  20px;
+      --sp-6:  24px;
+      --sp-8:  32px;
+      --sp-10: 40px;
+      --sp-12: 48px;
+
+      /* Radius */
+      --r-sm:  4px;
+      --r-md:  8px;
+      --r-lg:  12px;
+      --r-xl:  16px;
+      --r-full: 9999px;
+
+      /* Shadows */
+      --shadow-xs: 0 1px 2px rgba(0,0,0,.04);
+      --shadow-sm: 0 1px 4px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.04);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,.10), 0 2px 6px rgba(0,0,0,.04);
+
+      /* Transitions */
+      --ease:      cubic-bezier(.16, 1, .3, 1);
+      --ease-snap: cubic-bezier(.4, 0, .2, 1);
+      --dur-fast:  100ms;
+      --dur-base:  160ms;
+      --dur-slow:  280ms;
+
+      /* Layout */
+      --sidebar-w: 220px;
+      --topbar-h:  52px;
+    }
+
+    /* --- Dark theme -------------------------------------------- */
+    [data-theme="dark"] {
+      --accent-subtle:  rgba(91, 110, 245, .15);
+      --bg:             #111118;
+      --bg-subtle:      #18181F;
+      --bg-elevated:    #1E1E28;
+      --border:         #2A2A38;
+      --border-strong:  #36364A;
+      --text:           #EEEEF2;
+      --text-muted:     #8888A0;
+      --text-faint:     #55556A;
+      --sidebar-bg:     #18181F;
+      --sidebar-border: #2A2A38;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,.25);
+      --shadow-sm: 0 1px 4px rgba(0,0,0,.30), 0 1px 2px rgba(0,0,0,.20);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.40), 0 1px 3px rgba(0,0,0,.20);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,.50), 0 2px 6px rgba(0,0,0,.20);
+    }
+
+    /* Auto: follow OS */
+    @media (prefers-color-scheme: dark) {
+      [data-theme="auto"] {
+        --accent-subtle:  rgba(91, 110, 245, .15);
+        --bg:             #111118;
+        --bg-subtle:      #18181F;
+        --bg-elevated:    #1E1E28;
+        --border:         #2A2A38;
+        --border-strong:  #36364A;
+        --text:           #EEEEF2;
+        --text-muted:     #8888A0;
+        --text-faint:     #55556A;
+        --sidebar-bg:     #18181F;
+        --sidebar-border: #2A2A38;
+        --shadow-xs: 0 1px 2px rgba(0,0,0,.25);
+        --shadow-sm: 0 1px 4px rgba(0,0,0,.30), 0 1px 2px rgba(0,0,0,.20);
+        --shadow-md: 0 4px 12px rgba(0,0,0,.40), 0 1px 3px rgba(0,0,0,.20);
+        --shadow-lg: 0 8px 24px rgba(0,0,0,.50), 0 2px 6px rgba(0,0,0,.20);
+      }
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      font-size: var(--text-base);
+      line-height: var(--leading-normal);
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ============================================================
+       APP SHELL
+       ============================================================ */
+    #app {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* --- Sidebar ----------------------------------------------- */
+    #sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--sidebar-border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: 0 var(--sp-4);
+      border-bottom: 1px solid var(--sidebar-border);
+      flex-shrink: 0;
+    }
+
+    .logo-mark {
+      width: 26px;
+      height: 26px;
+      background: var(--accent);
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark svg {
+      width: 14px;
+      height: 14px;
+      fill: #fff;
+    }
+
+    .logo-name {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semi);
+      letter-spacing: -.01em;
+      color: var(--text);
+    }
+
+    .logo-badge {
+      margin-left: auto;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      color: var(--text-faint);
+      background: var(--border);
+      border-radius: var(--r-sm);
+      padding: 1px 5px;
+    }
+
+    /* Nav */
+    .sidebar-nav {
+      flex: 1;
+      padding: var(--sp-3) var(--sp-2);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow-y: auto;
+    }
+
+    .nav-section-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      color: var(--text-faint);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: var(--sp-3) var(--sp-2) var(--sp-1);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: 6px var(--sp-3);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      transition: background var(--dur-fast) var(--ease-snap),
+                  color var(--dur-fast) var(--ease-snap);
+      position: relative;
+      user-select: none;
+    }
+
+    .nav-item:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: var(--accent-subtle);
+      color: var(--accent);
+    }
+
+    .nav-item.active .nav-icon {
+      color: var(--accent);
+    }
+
+    .nav-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: var(--text-faint);
+      transition: color var(--dur-fast) var(--ease-snap);
+    }
+
+    .nav-item:hover .nav-icon {
+      color: var(--text-muted);
+    }
+
+    .nav-label {
+      flex: 1;
+    }
+
+    .nav-shortcut {
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+      font-family: var(--font-mono);
+      background: var(--border);
+      border-radius: var(--r-sm);
+      padding: 1px 4px;
+    }
+
+    /* Sidebar footer */
+    .sidebar-footer {
+      padding: var(--sp-3) var(--sp-2);
+      border-top: 1px solid var(--sidebar-border);
+      flex-shrink: 0;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: 6px var(--sp-3);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      transition: background var(--dur-fast) var(--ease-snap),
+                  color var(--dur-fast) var(--ease-snap);
+    }
+
+    .theme-toggle:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .theme-toggle .nav-icon {
+      color: var(--text-faint);
+    }
+
+    .theme-toggle:hover .nav-icon {
+      color: var(--text-muted);
+    }
+
+    /* --- Main area --------------------------------------------- */
+    #main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    /* Topbar */
+    #topbar {
+      height: var(--topbar-h);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 var(--sp-6);
+      gap: var(--sp-4);
+      flex-shrink: 0;
+      background: var(--bg);
+    }
+
+    .topbar-title {
+      font-size: var(--text-md);
+      font-weight: var(--weight-semi);
+      letter-spacing: -.015em;
+      color: var(--text);
+    }
+
+    .topbar-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+    }
+
+    .topbar-breadcrumb span {
+      color: var(--text-faint);
+    }
+
+    .topbar-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: 6px var(--sp-3);
+      border-radius: var(--r-md);
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background var(--dur-fast) var(--ease-snap),
+                  border-color var(--dur-fast) var(--ease-snap),
+                  box-shadow var(--dur-fast) var(--ease-snap),
+                  opacity var(--dur-fast) var(--ease-snap);
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border-color: transparent;
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg-subtle);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text);
+      border-color: var(--border);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 1px 3px rgba(91,110,245,.25);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      box-shadow: 0 2px 6px rgba(91,110,245,.35);
+    }
+
+    .btn svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    /* View content */
+    #content {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .view {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .view.active {
+      display: flex;
+    }
+
+    /* Empty state placeholder */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-4);
+      color: var(--text-faint);
+      user-select: none;
+    }
+
+    .empty-state-icon {
+      width: 48px;
+      height: 48px;
+      color: var(--border-strong);
+    }
+
+    .empty-state-title {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-semi);
+      color: var(--text-muted);
+      letter-spacing: -.02em;
+    }
+
+    .empty-state-desc {
+      font-size: var(--text-sm);
+      color: var(--text-faint);
+      max-width: 280px;
+      text-align: center;
+      line-height: var(--leading-loose);
+    }
+
+    .empty-state-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      color: var(--accent);
+      background: var(--accent-subtle);
+      border-radius: var(--r-full);
+      padding: 4px var(--sp-3);
+    }
+
+    /* View-specific topbar tabs (for sub-navigation if needed later) */
+    .view-tabs {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 3px;
+    }
+
+    .view-tab {
+      padding: 4px var(--sp-3);
+      border-radius: var(--r-md);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      color: var(--text-muted);
+      cursor: pointer;
+      border: none;
+      background: none;
+      transition: background var(--dur-fast), color var(--dur-fast);
+    }
+
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      background: var(--bg-elevated);
+      color: var(--text);
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* ============================================================
+       SCROLLBAR
+       ============================================================ */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-strong);
+      border-radius: var(--r-full);
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+    /* ============================================================
+       FOCUS / A11Y
+       ============================================================ */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* ============================================================
+       VIEW TRANSITION (fade-slide)
+       ============================================================ */
+    @keyframes viewIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .view.active {
+      animation: viewIn var(--dur-slow) var(--ease) both;
+    }
+
+    /* ============================================================
+       KANBAN
+       ============================================================ */
+
+    /* Toolbar */
+    .kanban-toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-6);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-1);
+    }
+
+    .filter-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      color: var(--text-faint);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      padding-right: var(--sp-1);
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: var(--r-full);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      transition: border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast);
+      user-select: none;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .filter-chip.active {
+      border-color: currentColor;
+      background: var(--accent-subtle);
+      color: var(--accent);
+    }
+
+    .filter-chip .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .toolbar-sep {
+      width: 1px;
+      height: 18px;
+      background: var(--border);
+      margin: 0 var(--sp-1);
+      flex-shrink: 0;
+    }
+
+    .filter-clear {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      color: var(--text-faint);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: var(--r-sm);
+      transition: color var(--dur-fast), background var(--dur-fast);
+    }
+
+    .filter-clear:hover { color: var(--danger); background: rgba(239,68,68,.08); }
+    .filter-clear.hidden { display: none; }
+
+    /* Board */
+    .kanban-board {
+      flex: 1;
+      display: flex;
+      gap: var(--sp-4);
+      padding: var(--sp-5) var(--sp-6);
+      overflow-x: auto;
+      overflow-y: hidden;
+      align-items: flex-start;
+    }
+
+    /* Column */
+    .kanban-col {
+      flex: 0 0 272px;
+      display: flex;
+      flex-direction: column;
+      max-height: 100%;
+      border-radius: var(--r-xl);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      transition: border-color var(--dur-fast);
+    }
+
+    .kanban-col.drag-over {
+      border-color: var(--accent);
+      background: var(--accent-subtle);
+    }
+
+    .kanban-col-header {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-4);
+      flex-shrink: 0;
+    }
+
+    .col-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .col-title {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semi);
+      color: var(--text);
+      flex: 1;
+      letter-spacing: -.01em;
+    }
+
+    .col-count {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      color: var(--text-faint);
+      background: var(--border);
+      border-radius: var(--r-full);
+      min-width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 6px;
+    }
+
+    .col-add-btn {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--r-sm);
+      border: none;
+      background: none;
+      color: var(--text-faint);
+      cursor: pointer;
+      transition: background var(--dur-fast), color var(--dur-fast);
+      flex-shrink: 0;
+    }
+
+    .col-add-btn:hover { background: var(--border); color: var(--text); }
+    .col-add-btn svg { width: 14px; height: 14px; }
+
+    .kanban-col-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 var(--sp-2) var(--sp-2);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+      min-height: 80px;
+    }
+
+    /* Drop placeholder */
+    .drop-placeholder {
+      border: 2px dashed var(--accent);
+      border-radius: var(--r-lg);
+      height: 72px;
+      flex-shrink: 0;
+      background: var(--accent-subtle);
+      opacity: 0;
+      transition: opacity var(--dur-base) var(--ease);
+      pointer-events: none;
+    }
+
+    .kanban-col.drag-over .drop-placeholder { opacity: 1; }
+
+    /* Card */
+    .kanban-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: var(--sp-3);
+      cursor: grab;
+      user-select: none;
+      box-shadow: var(--shadow-xs);
+      transition: box-shadow var(--dur-base) var(--ease),
+                  border-color var(--dur-base) var(--ease),
+                  transform var(--dur-base) var(--ease),
+                  opacity var(--dur-base) var(--ease);
+      flex-shrink: 0;
+    }
+
+    .kanban-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-strong);
+    }
+
+    .kanban-card.dragging {
+      opacity: .4;
+      transform: scale(.97);
+      cursor: grabbing;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sp-2);
+      margin-bottom: var(--sp-2);
+    }
+
+    .card-priority {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .priority-icon {
+      width: 13px;
+      height: 13px;
+    }
+
+    .card-title {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      color: var(--text);
+      line-height: var(--leading-tight);
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: var(--sp-2);
+    }
+
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: var(--r-full);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      border: 1px solid transparent;
+    }
+
+    .tag-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: var(--sp-1);
+    }
+
+    .card-id {
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+      font-family: var(--font-mono);
+    }
+
+    .assignee-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: var(--weight-bold);
+      color: #fff;
+      flex-shrink: 0;
+      letter-spacing: 0;
+    }
+
+    /* Column "done" cards slightly dimmed */
+    .kanban-col[data-col="done"] .kanban-card { opacity: .7; }
+    .kanban-col[data-col="done"] .kanban-card:hover { opacity: 1; }
+
+    /* Filtered-out cards */
+    .kanban-card.filtered { display: none; }
+
+    /* ── Task Modal ─────────────────────────────────────────────── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-4);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--dur-base) var(--ease);
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 440px;
+      padding: var(--sp-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-4);
+      transform: translateY(12px) scale(.97);
+      transition: transform var(--dur-slow) var(--ease);
+    }
+
+    .modal-backdrop.open .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-title {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-semi);
+      color: var(--text);
+      letter-spacing: -.02em;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-1);
+    }
+
+    .field label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      color: var(--text-muted);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .field input,
+    .field select {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 8px var(--sp-3);
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      color: var(--text);
+      transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(91,110,245,.15);
+    }
+
+    .field input::placeholder { color: var(--text-faint); }
+
+    .tag-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-1);
+    }
+
+    .tag-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: var(--r-full);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      transition: border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast);
+      user-select: none;
+    }
+
+    .tag-toggle:hover { border-color: var(--border-strong); color: var(--text); }
+    .tag-toggle.selected { color: #fff; border-color: transparent; }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--sp-2);
+      padding-top: var(--sp-2);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Priority icon colours ──────────────────────────────────── */
+    .pri-urgent { color: #EF4444; }
+    .pri-high   { color: #F59E0B; }
+    .pri-medium { color: #60A5FA; }
+    .pri-low    { color: #9898AA; }
+
+    /* ============================================================
+       TIMELINE / GANTT
+       ============================================================ */
+    .tl-outer {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .tl-toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: var(--sp-3) var(--sp-6);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+
+    .tl-range {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      color: var(--text-muted);
+    }
+
+    .tl-range strong {
+      color: var(--text);
+      font-weight: var(--weight-semi);
+    }
+
+    .tl-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Labels panel */
+    .tl-labels-panel {
+      width: 200px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+    }
+
+    .tl-labels-header {
+      height: 52px;   /* matches HEADER_H in SVG */
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-subtle);
+      display: flex;
+      align-items: flex-end;
+      padding: 0 var(--sp-4) var(--sp-2);
+    }
+
+    .tl-labels-header span {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      color: var(--text-faint);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .tl-labels-body {
+      flex: 1;
+      overflow-y: scroll;
+      scrollbar-width: none;
+    }
+    .tl-labels-body::-webkit-scrollbar { display: none; }
+
+    .tl-label-row {
+      height: 44px;   /* matches ROW_H in SVG */
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: 0 var(--sp-4);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tl-label-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .tl-label-text {
+      font-size: var(--text-sm);
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* SVG grid panel */
+    .tl-grid-panel {
+      flex: 1;
+      overflow: auto;
+      background: var(--bg);
+    }
+
+    #ganttSvg {
+      display: block;
+      overflow: visible;
+    }
+
+    /* ============================================================
+       DASHBOARD
+       ============================================================ */
+    .db-outer {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--bg-subtle);
+    }
+
+    .db-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        "kpis   kpis"
+        "burn   side"
+        "heat   heat";
+      gap: var(--sp-5);
+      padding: var(--sp-6);
+      max-width: 1200px;
+    }
+
+    /* KPI strip */
+    .db-kpis {
+      grid-area: kpis;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--sp-4);
+    }
+
+    .kpi-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: var(--sp-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+      box-shadow: var(--shadow-xs);
+      transition: box-shadow var(--dur-base) var(--ease);
+    }
+
+    .kpi-card:hover { box-shadow: var(--shadow-md); }
+
+    .kpi-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      color: var(--text-faint);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .kpi-value {
+      font-size: var(--text-3xl);
+      font-weight: var(--weight-bold);
+      color: var(--text);
+      letter-spacing: -.04em;
+      line-height: 1;
+    }
+
+    .kpi-value span { /* unit / percentage */
+      font-size: var(--text-lg);
+      font-weight: var(--weight-medium);
+      color: var(--text-muted);
+      margin-left: 2px;
+    }
+
+    .kpi-sub {
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+      margin-top: auto;
+    }
+
+    .kpi-bar {
+      height: 3px;
+      border-radius: var(--r-full);
+      background: var(--border);
+      overflow: hidden;
+      margin-top: var(--sp-1);
+    }
+
+    .kpi-bar-fill {
+      height: 100%;
+      border-radius: var(--r-full);
+      background: var(--accent);
+      transition: width .8s var(--ease);
+    }
+
+    /* Generic db card */
+    .db-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: var(--sp-5);
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-4);
+    }
+
+    .db-card-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--sp-3);
+    }
+
+    .db-card-title {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semi);
+      color: var(--text);
+      letter-spacing: -.01em;
+    }
+
+    .db-card-meta {
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+    }
+
+    .db-legend {
+      display: flex;
+      gap: var(--sp-4);
+      flex-wrap: wrap;
+    }
+
+    .db-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    .db-legend-line {
+      width: 18px;
+      height: 2px;
+      border-radius: var(--r-full);
+    }
+
+    .db-legend-dash {
+      width: 18px;
+      height: 0;
+      border-top: 2px dashed var(--text-faint);
+      opacity: .5;
+    }
+
+    /* Burndown canvas wrapper */
+    .db-burndown { grid-area: burn; }
+
+    #burndownCanvas {
+      width: 100%;
+      height: 220px;
+      display: block;
+      border-radius: var(--r-md);
+    }
+
+    /* Side panel */
+    .db-side { grid-area: side; display: flex; flex-direction: column; gap: var(--sp-4); }
+
+    /* Priority breakdown */
+    .pri-bars { display: flex; flex-direction: column; gap: var(--sp-3); }
+
+    .pri-bar-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+    }
+
+    .pri-bar-label {
+      width: 56px;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .pri-bar-track {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: var(--r-full);
+      overflow: hidden;
+    }
+
+    .pri-bar-fill {
+      height: 100%;
+      border-radius: var(--r-full);
+      transition: width .7s var(--ease);
+    }
+
+    .pri-bar-count {
+      width: 20px;
+      text-align: right;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    /* Assignee breakdown */
+    .assignee-rows { display: flex; flex-direction: column; gap: var(--sp-3); }
+
+    .assignee-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+    }
+
+    .assignee-row .assignee-avatar {
+      width: 26px;
+      height: 26px;
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+
+    .assignee-info { flex: 1; min-width: 0; }
+
+    .assignee-name {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      color: var(--text);
+    }
+
+    .assignee-track {
+      height: 4px;
+      background: var(--border);
+      border-radius: var(--r-full);
+      margin-top: 4px;
+      overflow: hidden;
+    }
+
+    .assignee-fill {
+      height: 100%;
+      border-radius: var(--r-full);
+      transition: width .7s var(--ease);
+    }
+
+    .assignee-count {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    /* Heatmap */
+    .db-heat { grid-area: heat; }
+
+    .heatmap-wrap {
+      display: flex;
+      gap: var(--sp-3);
+      align-items: flex-start;
+    }
+
+    .heatmap-day-labels {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-top: 22px; /* align with first week row */
+    }
+
+    .heatmap-day-label {
+      height: 20px;
+      display: flex;
+      align-items: center;
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+      font-weight: var(--weight-medium);
+      width: 18px;
+    }
+
+    .heatmap-main { flex: 1; min-width: 0; }
+
+    .heatmap-week-labels {
+      display: flex;
+      margin-bottom: 4px;
+    }
+
+    .heatmap-week-label {
+      flex: 1;
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+      text-align: center;
+    }
+
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(7, 20px);
+      grid-auto-flow: column;
+      gap: 4px;
+    }
+
+    .heatmap-cell {
+      border-radius: 4px;
+      background: var(--border);
+      transition: transform var(--dur-fast), opacity var(--dur-fast);
+      cursor: default;
+      position: relative; /* required for z-index on hover */
+    }
+
+    .heatmap-cell:hover { transform: scale(1.25); z-index: 2; }
+
+    .heatmap-legend {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      margin-top: var(--sp-3);
+      justify-content: flex-end;
+    }
+
+    .heatmap-legend-label {
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+    }
+
+    .heatmap-legend-cells {
+      display: flex;
+      gap: 3px;
+    }
+
+    .heatmap-legend-cell {
+      width: 13px;
+      height: 13px;
+      border-radius: 3px;
+    }
+
+    /* ============================================================
+       COMMAND PALETTE
+       ============================================================ */
+    .cmd-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.52);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 300;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 13vh;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--dur-base) var(--ease);
+    }
+
+    .cmd-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .cmd-box {
+      width: 100%;
+      max-width: 528px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(91,110,245,.08);
+      overflow: hidden;
+      transform: translateY(-12px) scale(.97);
+      transition: transform var(--dur-slow) var(--ease);
+    }
+
+    .cmd-backdrop.open .cmd-box {
+      transform: none;
+    }
+
+    .cmd-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: var(--sp-4);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cmd-search-icon {
+      width: 16px;
+      height: 16px;
+      color: var(--text-faint);
+      flex-shrink: 0;
+    }
+
+    #cmdInput {
+      flex: 1;
+      border: none;
+      background: none;
+      outline: none;
+      font-family: var(--font);
+      font-size: var(--text-md);
+      color: var(--text);
+      caret-color: var(--accent);
+    }
+
+    #cmdInput::placeholder { color: var(--text-faint); }
+
+    .cmd-esc-badge {
+      font-size: var(--text-xs);
+      font-family: var(--font-mono);
+      color: var(--text-faint);
+      background: var(--border);
+      border-radius: var(--r-sm);
+      padding: 2px 6px;
+      flex-shrink: 0;
+    }
+
+    .cmd-results {
+      max-height: 350px;
+      overflow-y: auto;
+      padding: var(--sp-2) 0;
+    }
+
+    .cmd-group-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      color: var(--text-faint);
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: var(--sp-2) var(--sp-4) var(--sp-1);
+    }
+
+    .cmd-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: 9px var(--sp-4);
+      cursor: pointer;
+      transition: background var(--dur-fast);
+      border-radius: 0;
+    }
+
+    .cmd-item:hover, .cmd-item.active {
+      background: var(--accent-subtle);
+    }
+
+    .cmd-item.active .cmd-item-label { color: var(--accent); }
+    .cmd-item.active .cmd-item-icon  { color: var(--accent); }
+
+    .cmd-item-icon {
+      width: 15px;
+      height: 15px;
+      color: var(--text-faint);
+      flex-shrink: 0;
+    }
+
+    .cmd-item-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .cmd-item-label {
+      flex: 1;
+      font-size: var(--text-sm);
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cmd-item-label mark {
+      background: none;
+      color: var(--accent);
+      font-weight: var(--weight-semi);
+    }
+
+    .cmd-item-badge {
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 1px 6px;
+      flex-shrink: 0;
+    }
+
+    .cmd-item-shortcut {
+      font-size: var(--text-xs);
+      font-family: var(--font-mono);
+      color: var(--text-faint);
+      background: var(--border);
+      border-radius: var(--r-sm);
+      padding: 1px 5px;
+      flex-shrink: 0;
+    }
+
+    .cmd-empty {
+      padding: var(--sp-8) var(--sp-4);
+      text-align: center;
+      font-size: var(--text-sm);
+      color: var(--text-faint);
+    }
+
+    .cmd-footer {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-5);
+      padding: var(--sp-2) var(--sp-4);
+      border-top: 1px solid var(--border);
+      background: var(--bg-subtle);
+    }
+
+    .cmd-hint {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+    }
+
+    .cmd-hint kbd {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: 3px;
+      padding: 1px 4px;
+      color: var(--text-muted);
+      box-shadow: 0 1px 0 var(--border-strong);
+    }
+
+    /* ============================================================
+       HELP MODAL
+       ============================================================ */
+    .help-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.52);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-4);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--dur-base) var(--ease);
+    }
+
+    .help-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .help-backdrop .modal {
+      max-width: 580px;
+      gap: var(--sp-5);
+      transform: translateY(10px) scale(.97);
+      transition: transform var(--dur-slow) var(--ease);
+    }
+
+    .help-backdrop.open .modal {
+      transform: none;
+    }
+
+    .help-header { display: flex; align-items: baseline; gap: var(--sp-3); }
+
+    .help-title {
+      font-size: var(--text-2xl);
+      font-weight: var(--weight-bold);
+      color: var(--text);
+      letter-spacing: -.03em;
+    }
+
+    .help-sub {
+      font-size: var(--text-sm);
+      color: var(--text-faint);
+    }
+
+    .help-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-6);
+    }
+
+    .help-section-title {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semi);
+      color: var(--text-faint);
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      margin-bottom: var(--sp-3);
+    }
+
+    .help-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .help-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .help-row:last-child { border-bottom: none; }
+
+    .help-row-desc {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+    }
+
+    .help-keys {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 22px;
+      padding: 0 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: var(--weight-medium);
+      color: var(--text);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--r-sm);
+      box-shadow: 0 1px 0 var(--border-strong);
+      white-space: nowrap;
+    }
+
+    .kbd-sep {
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+      padding: 0 1px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============================================================
+       SIDEBAR
+       ============================================================ -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-mark">
+        <!-- M logomark -->
+        <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 12V2l3.5 5L8 2l3.5 5L13 2v10" stroke="#fff" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <span class="logo-name">Meridian</span>
+      <span class="logo-badge">v0.1</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-section-label">Vues</span>
+
+      <button class="nav-item active" data-view="kanban">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="2" width="4" height="12" rx="1"/>
+          <rect x="6" y="2" width="4" height="8"  rx="1"/>
+          <rect x="11" y="2" width="4" height="10" rx="1"/>
+        </svg>
+        <span class="nav-label">Kanban</span>
+        <span class="nav-shortcut">1</span>
+      </button>
+
+      <button class="nav-item" data-view="timeline">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="1" y1="4" x2="15" y2="4"/>
+          <line x1="1" y1="8" x2="15" y2="8"/>
+          <line x1="1" y1="12" x2="15" y2="12"/>
+          <rect x="2" y="2.5" width="5" height="3" rx=".75" fill="currentColor" stroke="none"/>
+          <rect x="6" y="6.5" width="7" height="3" rx=".75" fill="currentColor" stroke="none"/>
+          <rect x="3" y="10.5" width="4" height="3" rx=".75" fill="currentColor" stroke="none"/>
+        </svg>
+        <span class="nav-label">Timeline</span>
+        <span class="nav-shortcut">2</span>
+      </button>
+
+      <button class="nav-item" data-view="dashboard">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="1" width="6" height="7" rx="1"/>
+          <rect x="9" y="1" width="6" height="4" rx="1"/>
+          <rect x="9" y="7" width="6" height="8" rx="1"/>
+          <rect x="1" y="10" width="6" height="5" rx="1"/>
+        </svg>
+        <span class="nav-label">Dashboard</span>
+        <span class="nav-shortcut">3</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="themeToggle">
+        <svg class="nav-icon" id="themeIcon" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Moon (shown in light mode) -->
+          <path d="M13.5 10.5A6 6 0 015.5 2.5a6 6 0 108 8z"/>
+        </svg>
+        <span id="themeLabel">Thème sombre</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       MAIN
+       ============================================================ -->
+  <div id="main">
+
+    <!-- Topbar -->
+    <header id="topbar">
+      <div class="topbar-breadcrumb">
+        <span>Meridian</span>
+        <span>›</span>
+        <strong id="viewTitle">Kanban</strong>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost" id="helpBtn">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="7" cy="7" r="6"/>
+            <path d="M5.5 5.5a1.5 1.5 0 013 .5c0 1-1.5 1.5-1.5 2.5"/>
+            <circle cx="7" cy="11" r=".5" fill="currentColor" stroke="none"/>
+          </svg>
+          Aide
+        </button>
+        <button class="btn btn-secondary">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 2v10M2 7h10"/>
+          </svg>
+          Nouvelle tâche
+        </button>
+      </div>
+    </header>
+
+    <!-- Views -->
+    <div id="content">
+
+      <!-- KANBAN -->
+      <section class="view active" id="view-kanban">
+        <!-- Toolbar / Filters -->
+        <div class="kanban-toolbar" id="kanbanToolbar">
+          <span class="filter-label">Priorité</span>
+          <div class="filter-group" id="filterPriority"></div>
+          <div class="toolbar-sep"></div>
+          <span class="filter-label">Tag</span>
+          <div class="filter-group" id="filterTag"></div>
+          <div class="toolbar-sep"></div>
+          <span class="filter-label">Assigné</span>
+          <div class="filter-group" id="filterAssignee"></div>
+          <div class="toolbar-sep"></div>
+          <button class="filter-clear hidden" id="filterClear">✕ Effacer</button>
+        </div>
+        <!-- Board -->
+        <div class="kanban-board" id="kanbanBoard"></div>
+      </section>
+
+      <!-- TIMELINE -->
+      <section class="view" id="view-timeline">
+        <div class="tl-outer">
+          <div class="tl-toolbar">
+            <span class="tl-range" id="tlRange"></span>
+            <div style="margin-left:auto;display:flex;gap:var(--sp-2)">
+              <button class="btn btn-ghost" id="tlTodayBtn">
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="2" width="12" height="11" rx="1.5"/>
+                  <line x1="1" y1="5.5" x2="13" y2="5.5"/>
+                  <line x1="4" y1="1" x2="4" y2="4"/>
+                  <line x1="10" y1="1" x2="10" y2="4"/>
+                  <rect x="5" y="8" width="4" height="2" rx=".5" fill="currentColor" stroke="none"/>
+                </svg>
+                Aujourd'hui
+              </button>
+            </div>
+          </div>
+          <div class="tl-container">
+            <div class="tl-labels-panel">
+              <div class="tl-labels-header"><span>Tâches</span></div>
+              <div class="tl-labels-body" id="tlLabelsBody"></div>
+            </div>
+            <div class="tl-grid-panel" id="tlGridPanel">
+              <svg id="ganttSvg"></svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DASHBOARD -->
+      <section class="view" id="view-dashboard">
+        <div class="db-outer">
+          <div class="db-grid">
+
+            <!-- KPIs -->
+            <div class="db-kpis" id="dbKpis"></div>
+
+            <!-- Burndown -->
+            <div class="db-card db-burndown">
+              <div class="db-card-header">
+                <span class="db-card-title">Burndown — 4 semaines</span>
+                <div class="db-legend">
+                  <span class="db-legend-item">
+                    <span class="db-legend-line" style="background:var(--accent)"></span>Réel
+                  </span>
+                  <span class="db-legend-item">
+                    <span class="db-legend-dash"></span>Idéal
+                  </span>
+                </div>
+              </div>
+              <canvas id="burndownCanvas"></canvas>
+            </div>
+
+            <!-- Side panel: priority + assignees -->
+            <div class="db-side">
+              <div class="db-card">
+                <div class="db-card-header">
+                  <span class="db-card-title">Par priorité</span>
+                  <span class="db-card-meta" id="dbPriMeta"></span>
+                </div>
+                <div class="pri-bars" id="dbPriBars"></div>
+              </div>
+              <div class="db-card">
+                <div class="db-card-header">
+                  <span class="db-card-title">Par assigné</span>
+                </div>
+                <div class="assignee-rows" id="dbAssigneeRows"></div>
+              </div>
+            </div>
+
+            <!-- Heatmap -->
+            <div class="db-card db-heat">
+              <div class="db-card-header">
+                <span class="db-card-title">Activité — 4 semaines</span>
+                <span class="db-card-meta">Tâches créées par jour</span>
+              </div>
+              <div class="heatmap-wrap">
+                <div class="heatmap-day-labels" id="dbDayLabels"></div>
+                <div class="heatmap-main">
+                  <div class="heatmap-week-labels" id="dbWeekLabels"></div>
+                  <div class="heatmap-grid" id="dbHeatGrid"></div>
+                  <div class="heatmap-legend">
+                    <span class="heatmap-legend-label">Moins</span>
+                    <div class="heatmap-legend-cells" id="dbHeatLegend"></div>
+                    <span class="heatmap-legend-label">Plus</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     COMMAND PALETTE
+     ============================================================ -->
+<div class="cmd-backdrop" id="cmdPalette">
+  <div class="cmd-box" role="dialog" aria-modal="true" aria-label="Palette de commandes">
+    <div class="cmd-input-wrap">
+      <svg class="cmd-search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+           stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="7" cy="7" r="5"/><line x1="11" y1="11" x2="14" y2="14"/>
+      </svg>
+      <input id="cmdInput" type="text" placeholder="Rechercher une tâche ou une action…" autocomplete="off" spellcheck="false" />
+      <span class="cmd-esc-badge">Esc</span>
+    </div>
+    <div class="cmd-results" id="cmdResults"></div>
+    <div class="cmd-footer">
+      <span class="cmd-hint"><kbd>↑</kbd><kbd>↓</kbd> Naviguer</span>
+      <span class="cmd-hint"><kbd>↵</kbd> Sélectionner</span>
+      <span class="cmd-hint"><kbd>Esc</kbd> Fermer</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     HELP MODAL
+     ============================================================ -->
+<div class="help-backdrop" id="helpModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="help-header">
+      <span class="help-title" id="helpTitle">Raccourcis clavier</span>
+      <span class="help-sub">Meridian — référence rapide</span>
+    </div>
+    <div class="help-grid">
+      <!-- Col 1 -->
+      <div>
+        <p class="help-section-title">Navigation</p>
+        <div class="help-rows">
+          <div class="help-row">
+            <span class="help-row-desc">Vue Kanban</span>
+            <span class="help-keys"><span class="kbd">1</span></span>
+          </div>
+          <div class="help-row">
+            <span class="help-row-desc">Vue Timeline</span>
+            <span class="help-keys"><span class="kbd">2</span></span>
+          </div>
+          <div class="help-row">
+            <span class="help-row-desc">Dashboard</span>
+            <span class="help-keys"><span class="kbd">3</span></span>
+          </div>
+          <div class="help-row">
+            <span class="help-row-desc">Palette de commandes</span>
+            <span class="help-keys"><span class="kbd">⌘</span><span class="kbd-sep">+</span><span class="kbd">K</span></span>
+          </div>
+          <div class="help-row">
+            <span class="help-row-desc">Aide (ce modal)</span>
+            <span class="help-keys"><span class="kbd">?</span></span>
+          </div>
+          <div class="help-row">
+            <span class="help-row-desc">Fermer / Annuler</span>
+            <span class="help-keys"><span class="kbd">Esc</span></span>
+          </div>
+        </div>
+
+        <p class="help-section-title" style="margin-top:var(--sp-5)">Thème</p>
+        <div class="help-rows">
+          <div class="help-row">
+            <span class="help-row-desc">Basculer clair / sombre</span>
+            <span class="help-keys"><span class="kbd">T</span></span>
+          </div>
+        </div>
+      </div>
+      <!-- Col 2 -->
+      <div>
+        <p class="help-section-title">Kanban</p>
+        <div class="help-rows">
+          <div class="help-row">
+            <span class="help-row-desc">Nouvelle tâche (Backlog)</span>
+            <span class="help-keys"><span class="kbd">N</span></span>
+          </div>
+          <div class="help-row">
+            <span class="help-row-desc">Déplacer une carte</span>
+            <span class="help-keys"><span class="kbd">Glisser</span></span>
+          </div>
+          <div class="help-row">
+            <span class="help-row-desc">Effacer les filtres</span>
+            <span class="help-keys"><span class="kbd">F</span></span>
+          </div>
+        </div>
+
+        <p class="help-section-title" style="margin-top:var(--sp-5)">Palette de commandes</p>
+        <div class="help-rows">
+          <div class="help-row">
+            <span class="help-row-desc">Naviguer dans la liste</span>
+            <span class="help-keys"><span class="kbd">↑</span><span class="kbd-sep">/</span><span class="kbd">↓</span></span>
+          </div>
+          <div class="help-row">
+            <span class="help-row-desc">Exécuter l'action</span>
+            <span class="help-keys"><span class="kbd">↵</span></span>
+          </div>
+          <div class="help-row">
+            <span class="help-row-desc">Recherche tâches</span>
+            <span class="help-keys"><span class="kbd">≥ 1 car.</span></span>
+          </div>
+        </div>
+
+        <p class="help-section-title" style="margin-top:var(--sp-5)">Timeline</p>
+        <div class="help-rows">
+          <div class="help-row">
+            <span class="help-row-desc">Centrer sur aujourd'hui</span>
+            <span class="help-keys"><span class="kbd">clic</span><span class="kbd-sep">→</span><span class="kbd">Aujourd'hui</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="helpCloseBtn">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCRIPT
+     ============================================================ -->
+<script>
+  var _appInitDone = false; // set true after all modules are initialized
+
+  /* ── Theme ──────────────────────────────────────────────────── */
+  const html        = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon   = document.getElementById('themeIcon');
+  const themeLabel  = document.getElementById('themeLabel');
+
+  const THEME_KEY = 'meridian:theme';
+
+  // moon SVG (shown when light → click for dark)
+  const SVG_MOON = `<path d="M13.5 10.5A6 6 0 015.5 2.5a6 6 0 108 8z"/>`;
+  // sun SVG (shown when dark → click for light)
+  const SVG_SUN  = `<circle cx="8" cy="8" r="3"/>
+    <line x1="8" y1="1" x2="8" y2="3"/>
+    <line x1="8" y1="13" x2="8" y2="15"/>
+    <line x1="1" y1="8" x2="3" y2="8"/>
+    <line x1="13" y1="8" x2="15" y2="8"/>
+    <line x1="2.9" y1="2.9" x2="4.3" y2="4.3"/>
+    <line x1="11.7" y1="11.7" x2="13.1" y2="13.1"/>
+    <line x1="2.9" y1="13.1" x2="4.3" y2="11.7"/>
+    <line x1="11.7" y1="4.3" x2="13.1" y2="2.9"/>`;
+
+  function isDark() {
+    const t = html.dataset.theme;
+    if (t === 'dark') return true;
+    if (t === 'light') return false;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  function applyThemeUI() {
+    if (isDark()) {
+      themeIcon.innerHTML = SVG_SUN;
+      themeLabel.textContent = 'Thème clair';
+    } else {
+      themeIcon.innerHTML = SVG_MOON;
+      themeLabel.textContent = 'Thème sombre';
+    }
+  }
+
+  function loadTheme() {
+    const saved = localStorage.getItem(THEME_KEY);
+    html.dataset.theme = saved || 'auto';
+    applyThemeUI();
+  }
+
+  themeToggle.addEventListener('click', () => {
+    const next = isDark() ? 'light' : 'dark';
+    html.dataset.theme = next;
+    localStorage.setItem(THEME_KEY, next);
+    applyThemeUI();
+  });
+
+  loadTheme();
+
+  // Track OS-level changes (for auto mode)
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (html.dataset.theme === 'auto') applyThemeUI();
+  });
+
+
+  /* ── Navigation ─────────────────────────────────────────────── */
+  const VIEW_TITLES = {
+    kanban:    'Kanban',
+    timeline:  'Timeline',
+    dashboard: 'Dashboard',
+  };
+
+  const viewTitle = document.getElementById('viewTitle');
+  const navItems  = document.querySelectorAll('.nav-item[data-view]');
+  const views     = document.querySelectorAll('.view');
+
+  function switchView(viewId) {
+    navItems.forEach(btn => btn.classList.toggle('active', btn.dataset.view === viewId));
+    views.forEach(v => v.classList.toggle('active', v.id === `view-${viewId}`));
+    viewTitle.textContent = VIEW_TITLES[viewId] || viewId;
+    localStorage.setItem('meridian:view', viewId);
+    if (viewId === 'timeline'  && _appInitDone) renderTimeline();
+    if (viewId === 'dashboard' && _appInitDone) renderDashboard();
+  }
+
+  navItems.forEach(btn => {
+    btn.addEventListener('click', () => switchView(btn.dataset.view));
+  });
+
+  // Global keyboard shortcuts
+  document.addEventListener('keydown', e => {
+    // ⌘K / Ctrl+K → command palette (intercept even in inputs)
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      openPalette();
+      return;
+    }
+    // Don't fire shortcuts when typing in a form field
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.target.isContentEditable) return;
+    // Ignore when any modal is open (except Esc)
+    const anyModalOpen = document.querySelector('.modal-backdrop.open, .help-backdrop.open, .cmd-backdrop.open');
+    if (anyModalOpen && e.key !== 'Escape') return;
+
+    switch (e.key) {
+      case '1': switchView('kanban');    break;
+      case '2': switchView('timeline');  break;
+      case '3': switchView('dashboard'); break;
+      case '?': openHelp();              break;
+      case 'n': case 'N': openModal('backlog'); break;
+      case 't': case 'T': themeToggle.click(); break;
+      case 'f': case 'F': clearAllFilters();   break;
+      case 'Escape':
+        closeModal();
+        closeHelp();
+        closePalette();
+        break;
+    }
+  });
+
+  /* ================================================================
+     KANBAN — data model & constants
+     ================================================================ */
+
+  const COLUMNS = [
+    { id: 'backlog',    label: 'Backlog',   dot: '#9898AA' },
+    { id: 'inprogress', label: 'En cours',  dot: '#60A5FA' },
+    { id: 'review',    label: 'Review',    dot: '#F59E0B' },
+    { id: 'done',      label: 'Terminé',   dot: '#22C55E' },
+  ];
+
+  const ASSIGNEES = [
+    { id: 'al', name: 'Alice',  initials: 'AL', color: '#A78BFA' },
+    { id: 'bo', name: 'Bob',    initials: 'BO', color: '#34D399' },
+    { id: 'cl', name: 'Claire', initials: 'CL', color: '#60A5FA' },
+    { id: 'da', name: 'David',  initials: 'DA', color: '#FB923C' },
+  ];
+
+  const TAGS = [
+    { id: 'frontend', label: 'Frontend', color: '#3B82F6' },
+    { id: 'backend',  label: 'Backend',  color: '#10B981' },
+    { id: 'design',   label: 'Design',   color: '#A855F7' },
+    { id: 'bug',      label: 'Bug',      color: '#EF4444' },
+    { id: 'feature',  label: 'Feature',  color: '#F59E0B' },
+    { id: 'infra',    label: 'Infra',    color: '#6366F1' },
+  ];
+
+  const PRIORITIES = [
+    { id: 'urgent', label: 'Urgent',  color: '#EF4444' },
+    { id: 'high',   label: 'Haute',   color: '#F59E0B' },
+    { id: 'medium', label: 'Moyenne', color: '#60A5FA' },
+    { id: 'low',    label: 'Basse',   color: '#9898AA' },
+  ];
+
+  const PRIORITY_SVG = {
+    urgent: `<svg class="priority-icon pri-urgent" viewBox="0 0 13 13" fill="currentColor"><path d="M6.5 1L12 11H1L6.5 1z"/></svg>`,
+    high:   `<svg class="priority-icon pri-high"   viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 9l4.5-5 4.5 5"/></svg>`,
+    medium: `<svg class="priority-icon pri-medium" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="2" y1="6.5" x2="11" y2="6.5"/><line x1="2" y1="9.5" x2="11" y2="9.5"/></svg>`,
+    low:    `<svg class="priority-icon pri-low"    viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 4l4.5 5 4.5-5"/></svg>`,
+  };
+
+  /* ── Seed data ──────────────────────────────────────────────── */
+  const SEED = [
+    { id:'t-001', title:'Mettre en place le CI/CD GitHub Actions',       column:'backlog',    priority:'high',   tags:['infra'],             assignee:'da' },
+    { id:'t-002', title:'Redesign de la page d\'accueil',                 column:'inprogress', priority:'medium', tags:['design','frontend'],  assignee:'cl' },
+    { id:'t-003', title:'Corriger le bug de pagination sur mobile',       column:'inprogress', priority:'urgent', tags:['bug','frontend'],     assignee:'al' },
+    { id:'t-004', title:'Optimiser les requêtes N+1 sur l\'API produits', column:'review',     priority:'high',   tags:['backend'],            assignee:'bo' },
+    { id:'t-005', title:'Rédiger les specs du module facturation',        column:'backlog',    priority:'medium', tags:['feature'],            assignee:'al' },
+    { id:'t-006', title:'Mettre à jour les dépendances npm',              column:'done',       priority:'low',    tags:['infra'],              assignee:'da' },
+    { id:'t-007', title:'Ajouter les tests E2E sur le flow de login',     column:'backlog',    priority:'high',   tags:['backend','frontend'], assignee:'bo' },
+    { id:'t-008', title:'Créer le composant DataTable réutilisable',      column:'review',     priority:'medium', tags:['frontend','design'],  assignee:'cl' },
+    { id:'t-009', title:'Configurer Sentry pour le suivi d\'erreurs',     column:'done',       priority:'medium', tags:['infra'],              assignee:'da' },
+    { id:'t-010', title:'Refactoring du module auth JWT',                 column:'backlog',    priority:'low',    tags:['backend'],            assignee:'bo' },
+  ];
+
+  /* ── Store ──────────────────────────────────────────────────── */
+  const TASKS_KEY = 'meridian:tasks';
+  let nextId = 11;
+
+  function loadTasks() {
+    try {
+      const raw = localStorage.getItem(TASKS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        // compute nextId from existing
+        parsed.forEach(t => {
+          const n = parseInt(t.id.replace('t-', ''), 10);
+          if (n >= nextId) nextId = n + 1;
+        });
+        return parsed;
+      }
+    } catch(_) {}
+    return SEED.map(t => ({ ...t }));
+  }
+
+  function saveTasks() {
+    localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+    // Keep dashboard in sync without requiring a view switch
+    if (_appInitDone && document.getElementById('view-dashboard').classList.contains('active')) {
+      renderDashboard();
+    }
+  }
+
+  let tasks = loadTasks();
+
+  /* ── Active filters ─────────────────────────────────────────── */
+  const activeFilters = { priority: new Set(), tag: new Set(), assignee: new Set() };
+
+  function hasActiveFilters() {
+    return activeFilters.priority.size || activeFilters.tag.size || activeFilters.assignee.size;
+  }
+
+  function taskMatchesFilters(task) {
+    if (activeFilters.priority.size && !activeFilters.priority.has(task.priority)) return false;
+    if (activeFilters.tag.size && !task.tags.some(t => activeFilters.tag.has(t))) return false;
+    if (activeFilters.assignee.size && !activeFilters.assignee.has(task.assignee)) return false;
+    return true;
+  }
+
+  /* ── Drag state ─────────────────────────────────────────────── */
+  let dragTaskId   = null;
+  let dragOverCol  = null;
+
+  /* ── Helpers ────────────────────────────────────────────────── */
+  function getTag(id)      { return TAGS.find(t => t.id === id); }
+  function getAssignee(id) { return ASSIGNEES.find(a => a.id === id); }
+  function getPriority(id) { return PRIORITIES.find(p => p.id === id); }
+  function getColumn(id)   { return COLUMNS.find(c => c.id === id); }
+
+  function makeId() {
+    return 't-' + String(nextId++).padStart(3, '0');
+  }
+
+  /* ── Render helpers ─────────────────────────────────────────── */
+  function renderCard(task) {
+    const a = getAssignee(task.assignee);
+    const visible = taskMatchesFilters(task);
+
+    const tagsHtml = task.tags.map(tid => {
+      const tag = getTag(tid);
+      if (!tag) return '';
+      const bg  = tag.color + '1A'; // 10% alpha
+      const col = tag.color;
+      return `<span class="tag-chip" style="background:${bg};color:${col};border-color:${col}33">
+        <span class="tag-dot" style="background:${col}"></span>${escHtml(tag.label)}
+      </span>`;
+    }).join('');
+
+    const avatarHtml = a
+      ? `<span class="assignee-avatar" style="background:${a.color}" title="${escHtml(a.name)}">${escHtml(a.initials)}</span>`
+      : '';
+
+    const priHtml = PRIORITY_SVG[task.priority] || '';
+
+    const card = document.createElement('div');
+    card.className = 'kanban-card' + (visible ? '' : ' filtered');
+    card.dataset.id = task.id;
+    card.draggable = true;
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-priority">${priHtml}</span>
+        <span class="card-title">${escHtml(task.title)}</span>
+      </div>
+      ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
+      <div class="card-footer">
+        <span class="card-id">${task.id}</span>
+        ${avatarHtml}
+      </div>`;
+
+    // Drag events
+    card.addEventListener('dragstart', e => {
+      dragTaskId = task.id;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      dragTaskId = null;
+      document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+    });
+
+    return card;
+  }
+
+  function renderColumn(col) {
+    const colTasks = tasks.filter(t => t.column === col.id);
+    const visibleCount = colTasks.filter(t => taskMatchesFilters(t)).length;
+
+    const el = document.createElement('div');
+    el.className = 'kanban-col';
+    el.dataset.col = col.id;
+    el.innerHTML = `
+      <div class="kanban-col-header">
+        <span class="col-dot" style="background:${col.dot}"></span>
+        <span class="col-title">${col.label}</span>
+        <span class="col-count">${hasActiveFilters() ? visibleCount : colTasks.length}</span>
+        <button class="col-add-btn" data-col="${col.id}" title="Ajouter une tâche">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg>
+        </button>
+      </div>
+      <div class="kanban-col-body" id="col-body-${col.id}" role="list" aria-label="${col.label}">
+        <div class="drop-placeholder" aria-hidden="true"></div>
+      </div>`;
+
+    // Drop events
+    el.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (dragOverCol !== col.id) {
+        document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+        el.classList.add('drag-over');
+        dragOverCol = col.id;
+      }
+    });
+
+    el.addEventListener('dragleave', e => {
+      if (!el.contains(e.relatedTarget)) {
+        el.classList.remove('drag-over');
+        dragOverCol = null;
+      }
+    });
+
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      if (dragTaskId) {
+        const task = tasks.find(t => t.id === dragTaskId);
+        if (task && task.column !== col.id) {
+          task.column = col.id;
+          saveTasks();
+          renderBoard();
+        }
+      }
+      dragOverCol = null;
+    });
+
+    // Add task button
+    el.querySelector('.col-add-btn').addEventListener('click', () => openModal(col.id));
+
+    return el;
+  }
+
+  function renderBoard() {
+    const board = document.getElementById('kanbanBoard');
+    board.innerHTML = '';
+    COLUMNS.forEach(col => {
+      const colEl = renderColumn(col);
+      const body  = colEl.querySelector(`#col-body-${col.id}`);
+      tasks.filter(t => t.column === col.id).forEach(task => {
+        body.appendChild(renderCard(task));
+      });
+      board.appendChild(colEl);
+    });
+  }
+
+  /* ── Toolbar / Filters ──────────────────────────────────────── */
+  // Build chips once, use event delegation — no DOM rebuild on every toggle
+  function initFilters() {
+    function addChips(containerId, items, type) {
+      const el = document.getElementById(containerId);
+      items.forEach(item => {
+        const chip = document.createElement('button');
+        chip.className = 'filter-chip';
+        chip.dataset.ft = type;
+        chip.dataset.fv = item.id;
+        chip.innerHTML = `<span class="chip-dot" style="background:${item.color || item.dot || ''}"></span>${item.label || item.name}`;
+        el.appendChild(chip);
+      });
+    }
+    addChips('filterPriority', PRIORITIES, 'priority');
+    addChips('filterTag',      TAGS,       'tag');
+    addChips('filterAssignee', ASSIGNEES,  'assignee');
+
+    // Single delegated listener on the toolbar
+    document.getElementById('kanbanToolbar').addEventListener('click', e => {
+      const chip = e.target.closest('[data-ft]');
+      if (chip) toggleFilter(chip.dataset.ft, chip.dataset.fv);
+    });
+  }
+
+  // Only updates classes — no DOM reconstruction
+  function updateFilterUI() {
+    document.querySelectorAll('#kanbanToolbar [data-ft]').forEach(chip => {
+      chip.classList.toggle('active', activeFilters[chip.dataset.ft].has(chip.dataset.fv));
+    });
+    document.getElementById('filterClear').classList.toggle('hidden', !hasActiveFilters());
+  }
+
+  function toggleFilter(type, value) {
+    const set = activeFilters[type];
+    set.has(value) ? set.delete(value) : set.add(value);
+    updateFilterUI();
+    renderBoard();
+  }
+
+  function clearAllFilters() {
+    activeFilters.priority.clear();
+    activeFilters.tag.clear();
+    activeFilters.assignee.clear();
+    updateFilterUI();
+    renderBoard();
+  }
+
+  document.getElementById('filterClear').addEventListener('click', clearAllFilters);
+
+  /* ── "Nouvelle tâche" topbar button ────────────────────────── */
+  document.querySelector('.topbar-actions .btn-secondary').addEventListener('click', () => openModal('backlog'));
+
+  /* ── Modal ──────────────────────────────────────────────────── */
+  function buildModal() {
+    const backdrop = document.createElement('div');
+    backdrop.className = 'modal-backdrop';
+    backdrop.id = 'taskModal';
+
+    const colOptions = COLUMNS.map(c =>
+      `<option value="${c.id}">${c.label}</option>`
+    ).join('');
+
+    const priOptions = PRIORITIES.map(p =>
+      `<option value="${p.id}">${p.label}</option>`
+    ).join('');
+
+    const asOptions = `<option value="">— Aucun —</option>` + ASSIGNEES.map(a =>
+      `<option value="${a.id}">${a.name}</option>`
+    ).join('');
+
+    const tagToggles = TAGS.map(t =>
+      `<button type="button" class="tag-toggle" data-tag="${t.id}"
+         style="--tc:${t.color}">
+         <span class="tag-dot" style="background:${t.color}"></span>${t.label}
+       </button>`
+    ).join('');
+
+    backdrop.innerHTML = `
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <p class="modal-title" id="modalTitle">Nouvelle tâche</p>
+        <div class="field">
+          <label>Titre</label>
+          <input id="mTitle" type="text" placeholder="Décrire la tâche…" autocomplete="off" />
+        </div>
+        <div style="display:flex;gap:var(--sp-3)">
+          <div class="field" style="flex:1">
+            <label>Colonne</label>
+            <select id="mColumn">${colOptions}</select>
+          </div>
+          <div class="field" style="flex:1">
+            <label>Priorité</label>
+            <select id="mPriority">${priOptions}</select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Assigné à</label>
+          <select id="mAssignee">${asOptions}</select>
+        </div>
+        <div class="field">
+          <label>Tags</label>
+          <div class="tag-selector" id="mTags">${tagToggles}</div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" id="mCancel">Annuler</button>
+          <button class="btn btn-primary" id="mSubmit">Créer la tâche</button>
+        </div>
+      </div>`;
+
+    // Tag toggles
+    backdrop.querySelectorAll('.tag-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('selected');
+        if (btn.classList.contains('selected')) {
+          btn.style.background = getTag(btn.dataset.tag)?.color || '';
+        } else {
+          btn.style.background = '';
+        }
+      });
+    });
+
+    backdrop.addEventListener('click', e => { if (e.target === backdrop) closeModal(); });
+    backdrop.querySelector('#mCancel').addEventListener('click', closeModal);
+    backdrop.querySelector('#mSubmit').addEventListener('click', submitModal);
+
+    document.body.appendChild(backdrop);
+    return backdrop;
+  }
+
+  let modalEl = null;
+
+  function openModal(colId) {
+    if (!modalEl) modalEl = buildModal();
+    modalEl.querySelector('#mTitle').value = '';
+    modalEl.querySelector('#mColumn').value = colId;
+    modalEl.querySelector('#mPriority').value = 'medium';
+    modalEl.querySelector('#mAssignee').value = '';
+    modalEl.querySelectorAll('.tag-toggle').forEach(b => {
+      b.classList.remove('selected');
+      b.style.background = '';
+    });
+    modalEl.classList.add('open');
+    setTimeout(() => modalEl.querySelector('#mTitle').focus(), 80);
+  }
+
+  function closeModal() {
+    if (modalEl) modalEl.classList.remove('open');
+  }
+
+  function submitModal() {
+    const title = modalEl.querySelector('#mTitle').value.trim();
+    if (!title) {
+      modalEl.querySelector('#mTitle').focus();
+      modalEl.querySelector('#mTitle').style.borderColor = 'var(--danger)';
+      return;
+    }
+    modalEl.querySelector('#mTitle').style.borderColor = '';
+
+    const selectedTags = [...modalEl.querySelectorAll('.tag-toggle.selected')]
+      .map(b => b.dataset.tag);
+
+    const task = {
+      id:       makeId(),
+      title,
+      column:   modalEl.querySelector('#mColumn').value,
+      priority: modalEl.querySelector('#mPriority').value,
+      assignee: modalEl.querySelector('#mAssignee').value || null,
+      tags:     selectedTags,
+      createdAt: Date.now(),
+    };
+
+    tasks.unshift(task);
+    saveTasks();
+    closeModal();
+    renderBoard();
+  }
+
+  /* ── Utility ────────────────────────────────────────────────── */
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ── Init kanban ─────────────────────────────────────────────── */
+  initFilters();
+  renderBoard();
+
+  /* ================================================================
+     TIMELINE / GANTT
+     ================================================================ */
+
+  const DAY_W    = 38;
+  const ROW_H    = 44;
+  const HEADER_H = 52; // week row (26) + day row (26)
+  const TOTAL_DAYS = 28;
+  const MONTHS_FR = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
+  const PRI_COLORS = { urgent:'#EF4444', high:'#F59E0B', medium:'#5B6EF5', low:'#9898AA' };
+
+  // Default spread for tasks without timeline data
+  const _DEF_STARTS    = [0, 2, 7, 5, 10, 14, 3, 8, 16, 20];
+  const _DEF_DURATIONS = [3, 5, 2, 4,  3,  2, 5, 4,  2,  3];
+
+  function getMonday(d) {
+    const dt = new Date(d);
+    dt.setHours(0, 0, 0, 0);
+    const day = dt.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    dt.setDate(dt.getDate() + diff);
+    return dt;
+  }
+
+  function isoWeek(d) {
+    const dt = new Date(d);
+    dt.setHours(0, 0, 0, 0);
+    dt.setDate(dt.getDate() + 4 - (dt.getDay() || 7));
+    const jan1 = new Date(dt.getFullYear(), 0, 1);
+    return Math.ceil((((dt - jan1) / 86400000) + 1) / 7);
+  }
+
+  function ensureTimelineData(task, idx) {
+    if (task.startDay == null) task.startDay = _DEF_STARTS[idx % _DEF_STARTS.length];
+    if (!task.duration)       task.duration  = _DEF_DURATIONS[idx % _DEF_DURATIONS.length];
+    task.startDay = Math.max(0, Math.min(task.startDay, TOTAL_DAYS - 1));
+    task.duration = Math.max(1, Math.min(task.duration, TOTAL_DAYS - task.startDay));
+  }
+
+  function svgEl(tag, attrs, inner) {
+    const a = Object.entries(attrs).map(([k,v]) => `${k}="${v}"`).join(' ');
+    return inner != null ? `<${tag} ${a}>${inner}</${tag}>` : `<${tag} ${a}/>`;
+  }
+
+  function renderTimeline() {
+    tasks.forEach((t, i) => ensureTimelineData(t, i));
+    saveTasks();
+
+    const weekStart   = getMonday(new Date());
+    const todayOffset = getTodayOffset();
+
+    // ── Toolbar date range ──────────────────────────────────────
+    const rangeEnd = new Date(weekStart);
+    rangeEnd.setDate(rangeEnd.getDate() + TOTAL_DAYS - 1);
+    const fmt = d => `${d.getDate()} ${MONTHS_FR[d.getMonth()]} ${d.getFullYear()}`;
+    document.getElementById('tlRange').innerHTML =
+      `<strong>${fmt(weekStart)}</strong> → <strong>${fmt(rangeEnd)}</strong>`;
+
+    // ── SVG dimensions ──────────────────────────────────────────
+    const svgW = DAY_W * TOTAL_DAYS;
+    const svgH = HEADER_H + tasks.length * ROW_H;
+    const svg  = document.getElementById('ganttSvg');
+    svg.setAttribute('width',   svgW);
+    svg.setAttribute('height',  svgH);
+    svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
+
+    const out = [];
+
+    // ── Background ──────────────────────────────────────────────
+    out.push(svgEl('rect', { x:0, y:0, width:svgW, height:svgH, fill:'var(--bg)' }));
+
+    // ── Weekend columns ─────────────────────────────────────────
+    for (let d = 0; d < TOTAL_DAYS; d++) {
+      const dt = new Date(weekStart);
+      dt.setDate(dt.getDate() + d);
+      const dow = dt.getDay();
+      if (dow === 0 || dow === 6) {
+        out.push(svgEl('rect', {
+          x: d * DAY_W, y: HEADER_H,
+          width: DAY_W, height: tasks.length * ROW_H,
+          fill: 'var(--bg-subtle)', opacity: .9
+        }));
+      }
+    }
+
+    // ── Horizontal row lines ─────────────────────────────────────
+    for (let r = 0; r <= tasks.length; r++) {
+      const y = HEADER_H + r * ROW_H;
+      out.push(svgEl('line', { x1:0, y1:y, x2:svgW, y2:y,
+        stroke:'var(--border)', 'stroke-width':1 }));
+    }
+
+    // ── Vertical day / week lines ────────────────────────────────
+    for (let d = 0; d <= TOTAL_DAYS; d++) {
+      const x   = d * DAY_W;
+      const isW = d % 7 === 0;
+      out.push(svgEl('line', {
+        x1: x, y1: isW ? 0 : HEADER_H / 2, x2: x, y2: svgH,
+        stroke: 'var(--border)',
+        'stroke-width': isW ? 1.5 : 0.5,
+        opacity: isW ? 1 : 0.5
+      }));
+    }
+
+    // ── Week header row ──────────────────────────────────────────
+    for (let w = 0; w < 4; w++) {
+      const x  = w * 7 * DAY_W;
+      const wd = new Date(weekStart);
+      wd.setDate(wd.getDate() + w * 7);
+      const label = `S${isoWeek(wd)} · ${wd.getDate()} ${MONTHS_FR[wd.getMonth()]}`;
+      out.push(svgEl('rect', { x, y:0, width: 7 * DAY_W, height: 26, fill:'var(--bg-subtle)' }));
+      out.push(svgEl('text', {
+        x: x + 8, y: 17,
+        'font-size': 10.5, 'font-weight': 600,
+        'font-family': 'Inter,sans-serif',
+        fill: 'var(--text-muted)',
+        'letter-spacing': '0.03em'
+      }, label));
+    }
+
+    // ── Day number row ───────────────────────────────────────────
+    for (let d = 0; d < TOTAL_DAYS; d++) {
+      const x  = d * DAY_W;
+      const dt = new Date(weekStart);
+      dt.setDate(dt.getDate() + d);
+      const isToday   = d === todayOffset;
+      const isWeekend = dt.getDay() === 0 || dt.getDay() === 6;
+
+      if (isToday) {
+        out.push(svgEl('rect', { x: x+1, y: 26, width: DAY_W - 1, height: 26,
+          fill:'var(--accent)', rx: 0 }));
+      }
+      out.push(svgEl('text', {
+        x: x + DAY_W / 2, y: 26 + 17,
+        'text-anchor': 'middle',
+        'font-size': 11,
+        'font-weight': isToday ? 700 : 500,
+        'font-family': 'Inter,sans-serif',
+        fill: isToday ? '#fff' : isWeekend ? 'var(--text-faint)' : 'var(--text-muted)'
+      }, dt.getDate()));
+    }
+
+    // ── Task bars ────────────────────────────────────────────────
+    const BAR_H = 26;
+    const BAR_Y_PAD = (ROW_H - BAR_H) / 2;
+
+    tasks.forEach((task, idx) => {
+      const rowY  = HEADER_H + idx * ROW_H;
+      const barX  = task.startDay * DAY_W + 2;
+      const barW  = task.duration * DAY_W - 4;
+      const barY  = rowY + BAR_Y_PAD;
+      const color = PRI_COLORS[task.priority] || '#5B6EF5';
+      const clipId = `cl-${task.id}`;
+      const textMaxW = barW - (barW > 60 ? 32 : 8);
+
+      out.push(`<clipPath id="${clipId}">` +
+        svgEl('rect', { x: barX + 6, y: barY, width: Math.max(textMaxW, 0), height: BAR_H }) +
+        `</clipPath>`);
+
+      // Bar
+      out.push(svgEl('rect', { x: barX, y: barY, width: barW, height: BAR_H,
+        rx: 6, fill: color, opacity: .88 }));
+      // Highlight sheen
+      out.push(svgEl('rect', { x: barX, y: barY, width: barW, height: BAR_H / 2,
+        rx: 6, fill: '#fff', opacity: .1 }));
+
+      // Title text
+      if (barW > 20) {
+        out.push(svgEl('text', {
+          x: barX + 8, y: barY + BAR_H / 2 + 4,
+          'font-size': 11.5, 'font-weight': 500,
+          'font-family': 'Inter,sans-serif',
+          fill: '#fff',
+          'clip-path': `url(#${clipId})`
+        }, escHtml(task.title)));
+      }
+
+      // Assignee avatar
+      const asgn = ASSIGNEES.find(a => a.id === task.assignee);
+      if (asgn && barW > 52) {
+        const avX = barX + barW - 14;
+        const avY = barY + BAR_H / 2;
+        out.push(svgEl('circle', { cx: avX, cy: avY, r: 9, fill: asgn.color }));
+        out.push(svgEl('text', {
+          x: avX, y: avY + 4,
+          'font-size': 7.5, 'font-weight': 700,
+          'font-family': 'Inter,sans-serif',
+          'text-anchor': 'middle', fill: '#fff'
+        }, asgn.initials));
+      }
+    });
+
+    // ── Today line ───────────────────────────────────────────────
+    if (todayOffset >= 0 && todayOffset < TOTAL_DAYS) {
+      const x = todayOffset * DAY_W + DAY_W / 2;
+      // Dashed line
+      out.push(svgEl('line', {
+        x1: x, y1: 26, x2: x, y2: svgH,
+        stroke: 'var(--accent)', 'stroke-width': 1.5,
+        'stroke-dasharray': '4 3', opacity: .55
+      }));
+      // Diamond marker
+      out.push(svgEl('polygon', {
+        points: `${x},26 ${x-5},19 ${x},12 ${x+5},19`,
+        fill: 'var(--accent)'
+      }));
+    }
+
+    svg.innerHTML = out.join('');
+
+    // ── Labels panel ─────────────────────────────────────────────
+    const labelsBody = document.getElementById('tlLabelsBody');
+    labelsBody.innerHTML = '';
+    tasks.forEach(task => {
+      const row = document.createElement('div');
+      row.className = 'tl-label-row';
+      const color = PRI_COLORS[task.priority] || '#5B6EF5';
+      row.innerHTML =
+        `<span class="tl-label-dot" style="background:${color}"></span>` +
+        `<span class="tl-label-text" title="${escHtml(task.title)}">${escHtml(task.title)}</span>`;
+      labelsBody.appendChild(row);
+    });
+
+    // Scroll to today
+    scrollToToday();
+  }
+
+  function scrollToToday() {
+    const panel = document.getElementById('tlGridPanel');
+    const todayOffset = getTodayOffset();
+    if (todayOffset >= 0 && todayOffset < TOTAL_DAYS) {
+      const x = todayOffset * DAY_W - panel.clientWidth / 2;
+      panel.scrollLeft = Math.max(0, x);
+    }
+  }
+
+  // Scroll sync: grid → labels
+  document.getElementById('tlGridPanel').addEventListener('scroll', function () {
+    document.getElementById('tlLabelsBody').scrollTop = this.scrollTop;
+  });
+
+  // "Today" button
+  document.getElementById('tlTodayBtn').addEventListener('click', scrollToToday);
+
+  /* ================================================================
+     DASHBOARD
+     ================================================================ */
+
+  /* ── Burndown simulation ────────────────────────────────────── */
+  function simulateBurndown() {
+    const total = tasks.length;
+    if (!total) return Array(28).fill(0);
+    const done = tasks.filter(t => t.column === 'done');
+
+    // Give each done task a deterministic "completion day" (0-27)
+    // weighted toward the second half (projects always run late)
+    const compDays = done.map(t => {
+      const n = parseInt(t.id.replace('t-', ''), 10) || 1;
+      return 12 + (n * 13) % 15; // days 12-26
+    }).sort((a, b) => a - b);
+
+    const pts = [];
+    for (let d = 0; d < 28; d++) {
+      const completed = compDays.filter(cd => cd <= d).length;
+      pts.push(total - completed);
+    }
+    return pts;
+  }
+
+  /* ── Heatmap activity ───────────────────────────────────────── */
+  // Deterministic per-day pseudo-activity (seed based on day index)
+  const _HEAT_SEED = [1,3,2,4,1,0,0, 2,4,3,2,3,1,0, 0,2,3,5,2,4,1, 3,2,1,3,2,0,0];
+
+  function getDayActivity(dayOffset) {
+    const wk = getMonday(new Date());
+    const dayStart = new Date(wk);
+    dayStart.setDate(dayStart.getDate() + dayOffset);
+    const dayEnd = new Date(dayStart);
+    dayEnd.setDate(dayEnd.getDate() + 1);
+    const real = tasks.filter(t =>
+      t.createdAt >= dayStart.getTime() && t.createdAt < dayEnd.getTime()
+    ).length;
+    return real + (_HEAT_SEED[dayOffset] || 0);
+  }
+
+  /* ── Shared today-offset helper ─────────────────────────────── */
+  function getTodayOffset() {
+    const t = new Date();
+    t.setHours(0, 0, 0, 0);
+    return Math.round((t - getMonday(new Date())) / 86400000);
+  }
+
+  /* ── Theme-aware canvas colors (resolves CSS vars deterministically) ── */
+  function getCanvasColors() {
+    const dark = html.dataset.theme === 'dark' ||
+      (html.dataset.theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    return {
+      bg:     dark ? '#1E1E28' : '#FFFFFF',
+      text:   dark ? '#8888A0' : '#6E6E82',
+      border: dark ? '#2A2A38' : '#E4E4EA',
+      accent: '#5B6EF5',
+    };
+  }
+
+  /* ── Canvas burndown ────────────────────────────────────────── */
+  function drawBurndown() {
+    const canvas = document.getElementById('burndownCanvas');
+    if (!canvas) return;
+    const ctx  = canvas.getContext('2d');
+    const dpr  = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();       // no forced reflow
+    const W    = rect.width  || 400;
+    const H    = rect.height || 220;
+    canvas.width  = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    ctx.scale(dpr, dpr);
+
+    const PAD  = { top: 18, right: 20, bottom: 38, left: 36 };
+    const cW   = W - PAD.left - PAD.right;
+    const cH   = H - PAD.top  - PAD.bottom;
+    const pts   = simulateBurndown();
+    const total = tasks.length || 1;
+
+    const { bg: cBg, text: cText, border: cBrd, accent: cAcc } = getCanvasColors();
+
+    const xAt = d => PAD.left + (d / 27) * cW;
+    const yAt = v => PAD.top  + (1 - v / total) * cH;
+
+    // Background
+    ctx.fillStyle = cBg; ctx.fillRect(0, 0, W, H);
+
+    // Grid lines + Y labels
+    ctx.textAlign = 'right';
+    ctx.font = `10px Inter, sans-serif`;
+    const steps = Math.min(total, 5);
+    for (let i = 0; i <= steps; i++) {
+      const v = Math.round((total / steps) * i);
+      const y = yAt(v);
+      ctx.strokeStyle = cBrd; ctx.lineWidth = 1;
+      ctx.globalAlpha = .45;
+      ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + cW, y); ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = cText;
+      ctx.fillText(v, PAD.left - 6, y + 3.5);
+    }
+
+    // X-axis week markers
+    ctx.textAlign = 'center';
+    for (let w = 0; w <= 4; w++) {
+      const d  = Math.min(w * 7, 27);
+      const x  = xAt(d);
+      const wd = new Date(getMonday(new Date()));
+      wd.setDate(wd.getDate() + d);
+      const lbl = w === 0 ? "Auj." : `S${isoWeek(wd)}`;
+      ctx.fillStyle = cText;
+      ctx.fillText(lbl, x, H - PAD.bottom + 14);
+    }
+
+    // Ideal dashed line
+    ctx.beginPath();
+    ctx.setLineDash([6, 4]);
+    ctx.strokeStyle = '#9898AA'; ctx.lineWidth = 1.5; ctx.globalAlpha = .45;
+    ctx.moveTo(xAt(0), yAt(total)); ctx.lineTo(xAt(27), yAt(0));
+    ctx.stroke();
+    ctx.setLineDash([]); ctx.globalAlpha = 1;
+
+    // Fill area under actual curve
+    ctx.beginPath();
+    ctx.moveTo(xAt(0), yAt(pts[0]));
+    for (let d = 1; d < 28; d++) ctx.lineTo(xAt(d), yAt(pts[d]));
+    ctx.lineTo(xAt(27), PAD.top + cH);
+    ctx.lineTo(xAt(0),  PAD.top + cH);
+    ctx.closePath();
+    const grad = ctx.createLinearGradient(0, PAD.top, 0, PAD.top + cH);
+    grad.addColorStop(0,   'rgba(91,110,245,.18)');
+    grad.addColorStop(1,   'rgba(91,110,245,.02)');
+    ctx.fillStyle = grad; ctx.fill();
+
+    // Actual curve stroke
+    ctx.beginPath();
+    ctx.moveTo(xAt(0), yAt(pts[0]));
+    for (let d = 1; d < 28; d++) ctx.lineTo(xAt(d), yAt(pts[d]));
+    ctx.strokeStyle = cAcc; ctx.lineWidth = 2.5; ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // Today dot
+    const todayD = getTodayOffset();
+    if (todayD >= 0 && todayD < 28) {
+      const tx = xAt(todayD), ty = yAt(pts[todayD]);
+      ctx.beginPath(); ctx.arc(tx, ty, 5, 0, Math.PI * 2);
+      ctx.fillStyle = cAcc; ctx.fill();
+      ctx.strokeStyle = cBg; ctx.lineWidth = 2; ctx.stroke();
+    }
+  }
+
+  /* ── Render dashboard ───────────────────────────────────────── */
+  function renderDashboard() {
+    const total    = tasks.length;
+    const done     = tasks.filter(t => t.column === 'done').length;
+    const inProg   = tasks.filter(t => t.column === 'inprogress').length;
+    const inReview = tasks.filter(t => t.column === 'review').length;
+    const pct      = total ? Math.round(done / total * 100) : 0;
+
+    // ── KPI cards ─────────────────────────────────────────────
+    const kpiData = [
+      { label: 'Total tâches',   value: total,    unit: '',  sub: `${tasks.filter(t=>t.column==='backlog').length} en backlog`,  color: 'var(--accent)',  pct: null },
+      { label: 'Terminées',      value: done,     unit: '',  sub: `sur ${total} tâches`,                                         color: '#22C55E',        pct: pct },
+      { label: 'En cours',       value: inProg,   unit: '',  sub: `+ ${inReview} en review`,                                     color: '#60A5FA',        pct: total ? Math.round((inProg+inReview)/total*100) : 0 },
+      { label: 'Complétion',     value: pct,      unit: '%', sub: `${done} / ${total} tâches`,                                   color: 'var(--accent)',  pct: pct },
+    ];
+
+    document.getElementById('dbKpis').innerHTML = kpiData.map(k => `
+      <div class="kpi-card">
+        <span class="kpi-label">${k.label}</span>
+        <span class="kpi-value">${k.value}<span>${k.unit}</span></span>
+        ${k.pct !== null ? `<div class="kpi-bar"><div class="kpi-bar-fill" style="width:${k.pct}%;background:${k.color}"></div></div>` : ''}
+        <span class="kpi-sub">${k.sub}</span>
+      </div>`).join('');
+
+    // ── Priority breakdown ────────────────────────────────────
+    const maxPri = Math.max(...PRIORITIES.map(p => tasks.filter(t=>t.priority===p.id).length), 1);
+    document.getElementById('dbPriMeta').textContent = `${total} tâche${total!==1?'s':''}`;
+    document.getElementById('dbPriBars').innerHTML = PRIORITIES.map(p => {
+      const count = tasks.filter(t => t.priority === p.id).length;
+      const w = Math.round(count / maxPri * 100);
+      return `<div class="pri-bar-row">
+        <span class="pri-bar-label">${p.label}</span>
+        <div class="pri-bar-track">
+          <div class="pri-bar-fill" style="width:${w}%;background:${p.color}"></div>
+        </div>
+        <span class="pri-bar-count">${count}</span>
+      </div>`;
+    }).join('');
+
+    // ── Assignee breakdown ────────────────────────────────────
+    const maxA = Math.max(...ASSIGNEES.map(a => tasks.filter(t=>t.assignee===a.id).length), 1);
+    document.getElementById('dbAssigneeRows').innerHTML = ASSIGNEES.map(a => {
+      const count = tasks.filter(t => t.assignee === a.id).length;
+      const w = Math.round(count / maxA * 100);
+      return `<div class="assignee-row">
+        <span class="assignee-avatar" style="background:${a.color}">${a.initials}</span>
+        <div class="assignee-info">
+          <div class="assignee-name">${a.name}</div>
+          <div class="assignee-track">
+            <div class="assignee-fill" style="width:${w}%;background:${a.color}"></div>
+          </div>
+        </div>
+        <span class="assignee-count">${count}</span>
+      </div>`;
+    }).join('');
+
+    // ── Heatmap ───────────────────────────────────────────────
+    const wk = getMonday(new Date());
+    const DAY_LABELS = ['L','M','M','J','V','S','D'];
+    const activities = Array.from({length:28}, (_, i) => getDayActivity(i));
+    const maxAct = Math.max(...activities, 1);
+    const HEAT_COLORS = ['var(--border)', '#c4b5fd', '#a78bfa', '#7c3aed', '#4c1d95'];
+
+    document.getElementById('dbDayLabels').innerHTML =
+      DAY_LABELS.map(l => `<div class="heatmap-day-label">${l}</div>`).join('');
+
+    document.getElementById('dbWeekLabels').innerHTML =
+      [0,1,2,3].map(w => {
+        const d = new Date(wk); d.setDate(d.getDate() + w*7);
+        return `<div class="heatmap-week-label">S${isoWeek(d)}</div>`;
+      }).join('');
+
+    document.getElementById('dbHeatGrid').innerHTML =
+      activities.map((act, i) => {
+        const lvl  = act === 0 ? 0 : Math.min(Math.ceil(act / maxAct * 4), 4);
+        const d    = new Date(wk); d.setDate(d.getDate() + i);
+        const tip  = `${act} action${act!==1?'s':''} · ${d.getDate()} ${MONTHS_FR[d.getMonth()]}`;
+        return `<div class="heatmap-cell" style="background:${HEAT_COLORS[lvl]}" title="${tip}"></div>`;
+      }).join('');
+
+    document.getElementById('dbHeatLegend').innerHTML =
+      HEAT_COLORS.map(c => `<div class="heatmap-legend-cell" style="background:${c}"></div>`).join('');
+
+    // ── Burndown (after layout settles) ───────────────────────
+    requestAnimationFrame(drawBurndown);
+  }
+
+  // Re-draw burndown when the dashboard panel is resized
+  const _dbView = document.getElementById('view-dashboard');
+  const _dbResizeObs = new ResizeObserver(entries => {
+    if (!_dbView.classList.contains('active')) return;
+    // Use reported size to avoid a second forced reflow
+    const W = entries[0]?.contentRect.width;
+    if (W > 0) requestAnimationFrame(drawBurndown);
+  });
+  _dbResizeObs.observe(_dbView);
+
+  // Re-draw burndown when the theme changes (canvas colours are non-CSS)
+  new MutationObserver(() => {
+    if (_dbView.classList.contains('active')) requestAnimationFrame(drawBurndown);
+  }).observe(html, { attributes: true, attributeFilter: ['data-theme'] });
+
+  /* ================================================================
+     COMMAND PALETTE
+     ================================================================ */
+
+  const PALETTE_COMMANDS = [
+    { label:'Vue Kanban',           group:'Vues',    icon:'kanban',    shortcut:'1',  action(){ closePalette(); switchView('kanban'); } },
+    { label:'Vue Timeline',         group:'Vues',    icon:'timeline',  shortcut:'2',  action(){ closePalette(); switchView('timeline'); } },
+    { label:'Dashboard',            group:'Vues',    icon:'dashboard', shortcut:'3',  action(){ closePalette(); switchView('dashboard'); } },
+    { label:'Nouvelle tâche',       group:'Actions', icon:'plus',      shortcut:'N',  action(){ closePalette(); openModal('backlog'); } },
+    { label:'Effacer les filtres',  group:'Actions', icon:'filter',    shortcut:'F',  action(){ closePalette(); clearAllFilters(); } },
+    { label:'Changer de thème',     group:'Actions', icon:'theme',     shortcut:'T',  action(){ closePalette(); themeToggle.click(); } },
+    { label:'Aide — raccourcis',    group:'Actions', icon:'help',      shortcut:'?',  action(){ closePalette(); openHelp(); } },
+  ];
+
+  const CMD_ICONS = {
+    kanban:   `<svg class="cmd-item-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="1" width="3" height="12" rx=".75"/><rect x="5.5" y="1" width="3" height="8" rx=".75"/><rect x="10" y="1" width="3" height="10" rx=".75"/></svg>`,
+    timeline: `<svg class="cmd-item-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="3.5" x2="13" y2="3.5"/><line x1="1" y1="7" x2="13" y2="7"/><line x1="1" y1="10.5" x2="13" y2="10.5"/><rect x="1.5" y="2" width="4" height="3" rx=".5" fill="currentColor" stroke="none" opacity=".4"/><rect x="5" y="5.5" width="6" height="3" rx=".5" fill="currentColor" stroke="none" opacity=".4"/></svg>`,
+    dashboard:`<svg class="cmd-item-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="1" width="5" height="6" rx=".75"/><rect x="8" y="1" width="5" height="3" rx=".75"/><rect x="8" y="6" width="5" height="7" rx=".75"/><rect x="1" y="9" width="5" height="4" rx=".75"/></svg>`,
+    plus:     `<svg class="cmd-item-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg>`,
+    filter:   `<svg class="cmd-item-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 3h10M4 7h6M6 11h2"/></svg>`,
+    theme:    `<svg class="cmd-item-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="7" r="2.5"/><path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M3.2 3.2l1 1M9.8 9.8l1 1M10.8 3.2l-1 1M4.2 9.8l-1 1"/></svg>`,
+    help:     `<svg class="cmd-item-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="6"/><path d="M5.3 5.5a1.7 1.7 0 013.4.3c0 1.2-1.7 1.5-1.7 2.7"/><circle cx="7" cy="11" r=".5" fill="currentColor" stroke="none"/></svg>`,
+  };
+
+  /* ── fuzzy match ───────────────────────────────────────────── */
+  function fuzzyMatch(query, str) {
+    if (!query) return { match: true, score: 1000, indices: [] };
+    const q = query.toLowerCase().replace(/\s+/g, '');
+    const s = str.toLowerCase();
+    let qi = 0;
+    const indices = [];
+    for (let si = 0; si < s.length && qi < q.length; si++) {
+      if (q[qi] === s[si]) { indices.push(si); qi++; }
+    }
+    if (qi < q.length) return { match: false };
+    // Score: earlier start + consecutive runs
+    let score = 100 - (indices[0] || 0);
+    for (let i = 1; i < indices.length; i++) {
+      if (indices[i] === indices[i - 1] + 1) score += 8;
+    }
+    return { match: true, score, indices };
+  }
+
+  function hlText(str, indices) {
+    if (!indices.length) return escHtml(str);
+    let out = '', j = 0;
+    for (let i = 0; i < str.length; i++) {
+      const ch = escHtml(str[i]);
+      out += (j < indices.length && indices[j] === i) ? (j++, `<mark>${ch}</mark>`) : ch;
+    }
+    return out;
+  }
+
+  /* ── palette state ─────────────────────────────────────────── */
+  let _palItems  = [];
+  let _palActive = -1;
+
+  const _palEl      = document.getElementById('cmdPalette');
+  const _palInput   = document.getElementById('cmdInput');
+  const _palResults = document.getElementById('cmdResults');
+
+  function openPalette() {
+    _palActive = -1;
+    _palInput.value = '';
+    _palEl.classList.add('open');
+    _palInput.focus();
+    _renderPaletteResults('');
+  }
+
+  function closePalette() { _palEl.classList.remove('open'); }
+
+  function _renderPaletteResults(query) {
+    _palItems = [];
+
+    // Static commands
+    const cmdHits = PALETTE_COMMANDS.map(cmd => {
+      const m = fuzzyMatch(query, cmd.label);
+      return m.match ? { ...cmd, score: m.score + 200, hlLabel: hlText(cmd.label, m.indices), isTask: false } : null;
+    }).filter(Boolean);
+
+    // Task search (only when query is non-empty)
+    const taskHits = query.length >= 1 ? tasks.map(t => {
+      const m = fuzzyMatch(query, t.title);
+      if (!m.match) return null;
+      const col = COLUMNS.find(c => c.id === t.column);
+      return {
+        label: t.title, hlLabel: hlText(t.title, m.indices),
+        group: 'Tâches', score: m.score, shortcut: '', isTask: true,
+        colLabel: col ? col.label : '', colDot: col ? col.dot : '#ccc',
+        action() { closePalette(); switchView('kanban'); }
+      };
+    }).filter(Boolean) : [];
+
+    _palItems = [
+      ...cmdHits.sort((a, b) => b.score - a.score),
+      ...taskHits.sort((a, b) => b.score - a.score),
+    ];
+    _palActive = _palItems.length ? 0 : -1;
+    _paintPalette();
+  }
+
+  function _paintPalette() {
+    if (!_palItems.length) {
+      const q = escHtml(_palInput.value);
+      _palResults.innerHTML = `<div class="cmd-empty">Aucun résultat${q ? ` pour « ${q} »` : ''}</div>`;
+      return;
+    }
+
+    // Group items
+    const groups = {};
+    _palItems.forEach((item, idx) => {
+      const g = item.group || 'Autre';
+      if (!groups[g]) groups[g] = [];
+      groups[g].push({ item, idx });
+    });
+
+    let html = '';
+    Object.entries(groups).forEach(([grp, entries]) => {
+      html += `<div class="cmd-group-label">${grp}</div>`;
+      entries.forEach(({ item, idx }) => {
+        const active = idx === _palActive ? ' active' : '';
+        html += `<div class="cmd-item${active}" data-idx="${idx}">`;
+        if (item.isTask) {
+          html += `<span class="cmd-item-dot" style="background:${item.colDot}"></span>`;
+        } else {
+          html += CMD_ICONS[item.icon] || '';
+        }
+        html += `<span class="cmd-item-label">${item.hlLabel}</span>`;
+        if (item.isTask) {
+          html += `<span class="cmd-item-badge">${item.colLabel}</span>`;
+        }
+        if (item.shortcut) {
+          html += `<span class="cmd-item-shortcut">${item.shortcut}</span>`;
+        }
+        html += `</div>`;
+      });
+    });
+
+    _palResults.innerHTML = html;
+
+    _palResults.querySelectorAll('.cmd-item').forEach(el => {
+      el.addEventListener('mouseenter', () => { _palActive = +el.dataset.idx; _updateActive(); });
+      el.addEventListener('click',      () => { _palActive = +el.dataset.idx; _execPalette(); });
+    });
+  }
+
+  function _updateActive() {
+    _palResults.querySelectorAll('.cmd-item').forEach(el => {
+      el.classList.toggle('active', +el.dataset.idx === _palActive);
+    });
+  }
+
+  function _movePalette(dir) {
+    if (!_palItems.length) return;
+    _palActive = Math.max(0, Math.min(_palItems.length - 1, _palActive + dir));
+    _updateActive();
+    _palResults.querySelector(`.cmd-item[data-idx="${_palActive}"]`)?.scrollIntoView({ block: 'nearest' });
+  }
+
+  function _execPalette() {
+    if (_palActive >= 0 && _palActive < _palItems.length) _palItems[_palActive].action();
+  }
+
+  _palInput.addEventListener('input',   () => _renderPaletteResults(_palInput.value));
+  _palInput.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown')  { e.preventDefault(); _movePalette(1); }
+    if (e.key === 'ArrowUp')    { e.preventDefault(); _movePalette(-1); }
+    if (e.key === 'Enter')      { e.preventDefault(); _execPalette(); }
+    if (e.key === 'Escape')     { closePalette(); }
+  });
+  _palEl.addEventListener('click', e => { if (e.target === _palEl) closePalette(); });
+
+  /* ================================================================
+     HELP MODAL
+     ================================================================ */
+  const _helpEl = document.getElementById('helpModal');
+
+  function openHelp()  { _helpEl.classList.add('open'); }
+  function closeHelp() { _helpEl.classList.remove('open'); }
+
+  document.getElementById('helpBtn').addEventListener('click', openHelp);
+  document.getElementById('helpCloseBtn').addEventListener('click', closeHelp);
+  _helpEl.addEventListener('click', e => { if (e.target === _helpEl) closeHelp(); });
+
+  /* ── App ready ── restore last view ─────────────────────────── */
+  _appInitDone = true;
+  const lastView = localStorage.getItem('meridian:view');
+  if (lastView && VIEW_TITLES[lastView]) switchView(lastView);
+</script>
+</body>
+</html>
