@@ -2,10 +2,13 @@
 
 > Application de gestion de projet complète — un seul fichier HTML, zéro dépendance.
 
+[![Démo live](https://img.shields.io/badge/Démo-mal0004.github.io%2Fmeridian-5B6EF5?style=flat-square&logo=github)](https://mal0004.github.io/meridian/)
 ![Version](https://img.shields.io/badge/version-0.1.0-5B6EF5?style=flat-square)
-![Taille](https://img.shields.io/badge/taille-~90 KB-22C55E?style=flat-square)
+![Taille](https://img.shields.io/badge/taille-~90%20KB-22C55E?style=flat-square)
 ![Dépendances](https://img.shields.io/badge/dépendances-0-F59E0B?style=flat-square)
-![Licence](https://img.shields.io/badge/licence-MIT-9898AA?style=flat-square)
+[![Licence](https://img.shields.io/badge/licence-MIT-9898AA?style=flat-square)](https://github.com/mal0004/meridian/blob/master/LICENSE)
+
+**[→ Ouvrir la démo](https://mal0004.github.io/meridian/)** · **[Code source](https://github.com/mal0004/meridian)**
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -217,7 +220,7 @@ Les tokens CSS sont définis en variables sur `:root` et remplacés par les over
 
 ```bash
 # Cloner le dépôt
-git clone https://github.com/vous/meridian.git
+git clone https://github.com/mal0004/meridian.git
 cd meridian
 
 # Ouvrir directement dans le navigateur
@@ -259,7 +262,8 @@ Les contributions sont les bienvenues. Ce projet étant un fichier unique, les c
 ### Processus
 
 ```bash
-# 1. Forker le dépôt, puis cloner votre fork
+# 1. Forker le dépôt sur https://github.com/mal0004/meridian
+#    puis cloner votre fork
 git clone https://github.com/VOTRE-USERNAME/meridian.git
 
 # 2. Créer une branche descriptive
@@ -372,5 +376,10 @@ SOFTWARE.
 ---
 
 <div align="center">
-  <sub>Construit avec ♥ en HTML / CSS / JS vanilla · Aucune dépendance · Fonctionne partout</sub>
+  <sub>
+    Construit avec ♥ en HTML / CSS / JS vanilla · Aucune dépendance · Fonctionne partout<br>
+    <a href="https://mal0004.github.io/meridian/">Démo live</a> ·
+    <a href="https://github.com/mal0004/meridian">GitHub</a> ·
+    <a href="https://github.com/mal0004/meridian/issues">Signaler un bug</a>
+  </sub>
 </div>
