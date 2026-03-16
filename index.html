@@ -2789,7 +2789,7 @@
             <div class="comment-input-row">
               <span class="comment-avatar-sm" id="fpCommentAvatar"></span>
               <textarea class="comment-textarea" id="fpCommentText"
-                placeholder="Écrire un commentaire… (Ctrl+Entrée)" rows="3"></textarea>
+                placeholder="Écrire un commentaire… (Ctrl+Entrée)" rows="3" maxlength="2000"></textarea>
             </div>
             <div class="comment-actions">
               <span class="comment-as-label">En tant que</span>
@@ -2827,7 +2827,7 @@
           <div class="comment-input-row">
             <span class="comment-avatar-sm" id="dCommentAvatar"></span>
             <textarea class="comment-textarea" id="dCommentText"
-              placeholder="Écrire un commentaire… (Ctrl+Entrée pour envoyer)" rows="3"></textarea>
+              placeholder="Écrire un commentaire… (Ctrl+Entrée pour envoyer)" rows="3" maxlength="2000"></textarea>
           </div>
           <div class="comment-actions">
             <span class="comment-as-label">En tant que</span>
@@ -3216,6 +3216,12 @@
     { id:'t-010', title:'Refactoring du module auth JWT',                 column:'backlog',    priority:'low',    tags:['backend'],            assignee:'bo', createdAt: NOW - 3*24*H,  comments:[] },
   ];
 
+  /* ── Validation sets (derived from static config, used in loadTasks + submitModal) */
+  const VALID_COL_IDS  = new Set(COLUMNS.map(c => c.id));
+  const VALID_PRI_IDS  = new Set(PRIORITIES.map(p => p.id));
+  const VALID_TAG_IDS  = new Set(TAGS.map(t => t.id));
+  const VALID_ASSN_IDS = new Set(ASSIGNEES.map(a => a.id));
+
   /* ── Store ──────────────────────────────────────────────────── */
   const TASKS_KEY = 'meridian:tasks';
   let nextId = 11;
@@ -3226,21 +3232,53 @@
       const raw = localStorage.getItem(TASKS_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        parsed.forEach(t => {
-          const n = parseInt(t.id.replace('t-', ''), 10);
-          if (n >= nextId) nextId = n + 1;
-          // migration: ensure comments array and createdAt exist
-          if (!Array.isArray(t.comments)) t.comments = [];
-          if (t.description === undefined) t.description = '';
-          if (!t.createdAt) t.createdAt = Date.now();
-          t.comments.forEach(c => {
-            const cn = parseInt(c.id.replace('c-', ''), 10);
-            if (cn >= nextCommentId) nextCommentId = cn + 1;
+        if (!Array.isArray(parsed)) throw new Error('not an array');
+
+        // Sanitize + migrate each task. Unknown/corrupted fields get safe defaults
+        // so a corrupted entry never reaches renderCard() with undefined values.
+        const sanitized = parsed
+          .filter(t => t && typeof t === 'object' &&
+                       typeof t.id === 'string' && /^t-\d+$/.test(t.id) &&
+                       typeof t.title === 'string' && t.title.trim())
+          .map(t => {
+            // Bump counters
+            const n = parseInt(t.id.replace('t-', ''), 10);
+            if (n >= nextId) nextId = n + 1;
+
+            const comments = Array.isArray(t.comments)
+              ? t.comments
+                  .filter(c => c && typeof c === 'object' &&
+                                typeof c.id === 'string' &&
+                                typeof c.text === 'string' && c.text.trim())
+                  .map(c => {
+                    const cn = parseInt(c.id.replace('c-', ''), 10);
+                    if (cn >= nextCommentId) nextCommentId = cn + 1;
+                    return { ...c, text: c.text.slice(0, 2000) };
+                  })
+              : [];
+
+            return {
+              ...t,
+              title:       String(t.title).trim().slice(0, 200),
+              column:      VALID_COL_IDS.has(t.column)   ? t.column   : 'backlog',
+              priority:    VALID_PRI_IDS.has(t.priority)  ? t.priority  : 'medium',
+              tags:        Array.isArray(t.tags)
+                             ? t.tags.filter(tag => VALID_TAG_IDS.has(tag))
+                             : [],
+              assignee:    VALID_ASSN_IDS.has(t.assignee) ? t.assignee  : null,
+              description: typeof t.description === 'string'
+                             ? t.description.slice(0, 50000)
+                             : '',
+              createdAt:   typeof t.createdAt === 'number' && t.createdAt > 0
+                             ? t.createdAt
+                             : Date.now(),
+              comments,
+            };
           });
-        });
-        return parsed;
+
+        return sanitized;
       }
-    } catch(_) {}
+    } catch (_) {}
     return SEED.map(t => ({ ...t, description: t.description || '', comments: (t.comments || []).map(c => ({ ...c })) }));
   }
 
@@ -3251,7 +3289,12 @@
   function _flushSave() {
     clearTimeout(_saveFlushTimer);
     _saveFlushTimer = null;
-    localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+    try {
+      localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+    } catch (e) {
+      // QuotaExceededError: storage full — in-memory state is still correct.
+      console.warn('[Meridian] localStorage write failed:', e.message);
+    }
   }
   function saveTasks() {
     clearTimeout(_saveFlushTimer);
@@ -3601,7 +3644,7 @@
         <p class="modal-title" id="modalTitle">Nouvelle tâche</p>
         <div class="field">
           <label>Titre</label>
-          <input id="mTitle" type="text" placeholder="Décrire la tâche…" autocomplete="off" />
+          <input id="mTitle" type="text" placeholder="Décrire la tâche…" autocomplete="off" maxlength="200" />
         </div>
         <div style="display:flex;gap:var(--sp-3)">
           <div class="field" style="flex:1">
@@ -3685,15 +3728,19 @@
     }
     modalEl.querySelector('#mTitle').style.borderColor = '';
 
+    const rawCol  = modalEl.querySelector('#mColumn').value;
+    const rawPri  = modalEl.querySelector('#mPriority').value;
+    const rawAssn = modalEl.querySelector('#mAssignee').value;
     const selectedTags = [...modalEl.querySelectorAll('.tag-toggle.selected')]
-      .map(b => b.dataset.tag);
+      .map(b => b.dataset.tag)
+      .filter(tag => VALID_TAG_IDS.has(tag));
 
     const task = {
       id:          makeId(),
-      title,
-      column:      modalEl.querySelector('#mColumn').value,
-      priority:    modalEl.querySelector('#mPriority').value,
-      assignee:    modalEl.querySelector('#mAssignee').value || null,
+      title:       title.slice(0, 200),
+      column:      VALID_COL_IDS.has(rawCol)   ? rawCol   : 'backlog',
+      priority:    VALID_PRI_IDS.has(rawPri)   ? rawPri   : 'medium',
+      assignee:    VALID_ASSN_IDS.has(rawAssn) ? rawAssn  : null,
       tags:        selectedTags,
       createdAt:   Date.now(),
       description: '',
@@ -4592,7 +4639,11 @@
         .replace(/`([^`]+)`/g, '<code>$1</code>')
         .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
         .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
+          // Block javascript: / data: and any other non-safe protocol.
+          const safe = /^https?:\/\//i.test(href) || /^mailto:/i.test(href) ? href : '#';
+          return `<a href="${safe}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+        });
     }
 
     const lines = md.split('\n');
